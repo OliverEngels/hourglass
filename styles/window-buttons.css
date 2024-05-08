@@ -1,0 +1,22 @@
+.window-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    -webkit-app-region: no-drag;
+}
+
+.window-control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: none;
+    outline: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background 0.3s;
+}
+
+.window-control:hover {
+    filter: brightness(0.9);
+}

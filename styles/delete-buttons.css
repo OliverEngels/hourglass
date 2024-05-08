@@ -1,0 +1,8 @@
+.cancel-btn {
+    transition: opacity 0.5s;
+}
+
+.cancel-btn:hover,
+.cancel-btn:focus {
+    opacity: 1;
+}

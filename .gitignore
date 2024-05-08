@@ -14,7 +14,7 @@
 /out/
 
 # production
-/build
+/out
 
 # misc
 .DS_Store
@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -34,3 +35,36 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Temporary folders
+tmp/
+temp/
+
+# Electron builder output
+dist/
+*.log
+release-builds/
+release/
+
+# Editors & IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Production / Release
+*.exe
+*.dmg
+*.deb
+*.rpm
+*.AppImage

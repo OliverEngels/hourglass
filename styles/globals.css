@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "scrollbar.css";
+@import "window-buttons.css";
+@import "form-elm.css";
+@import "delete-buttons.css"
