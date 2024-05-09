@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getMonthName, getWeekNumber } from './helpers/datetime.format';
-import React from 'react';
 
-interface CalenderProps {
-    title: string
-    placeholder: string
-    startAndEndDate?: boolean
-    setDates: Function
+interface CalendarProps {
+    title: string;
+    placeholder: string;
+    startAndEndDate?: boolean;
+    setDates: (dates: { startDate?: Date; endDate?: Date }) => void;
 }
 
-const DatePicker: React.FC<CalenderProps> = ({ title, placeholder, setDates, startAndEndDate = true }) => {
+const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, startAndEndDate }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState({
         startDate: new Date(Date.now()),
@@ -39,27 +38,27 @@ const DatePicker: React.FC<CalenderProps> = ({ title, placeholder, setDates, sta
     const selectDate = (date) => {
         if (!startAndEndDate) {
             setSelectedDates({ startDate: date, endDate: null });
-            setDates(date);
+            setDates({ startDate: date });
             setIsVisible(false);
+            return;
+        }
+
+        const { startDate, endDate } = selectedDates;
+        if (!startDate || endDate) {
+            setSelectedDates({ startDate: date, endDate: null });
+            setHoveredDate(null);
         } else {
-            if (!selectedDates.startDate || selectedDates.endDate) {
-                setSelectedDates({ startDate: date, endDate: null });
-                setHoveredDate(null);
-            } else {
-                const startDate =
-                    selectedDates.startDate != null && selectedDates.startDate > date ? date : selectedDates.startDate;
-                const endDate =
-                    selectedDates.startDate != null && selectedDates.startDate > date ? selectedDates.startDate : date
+            const _startDate = startDate > date ? date : startDate;
+            const _endDate = startDate > date ? startDate : date
 
-                setSelectedDates(prev => ({
-                    startDate: prev.startDate > date ? date : prev.startDate,
-                    endDate: prev.startDate > date ? prev.startDate : date
-                }));
+            setSelectedDates(prev => ({
+                startDate: prev.startDate > date ? date : prev.startDate,
+                endDate: prev.startDate > date ? prev.startDate : date
+            }));
 
-                setDates({ startDate: startDate, endDate: endDate });
+            setDates({ startDate: _startDate, endDate: _endDate });
 
-                setIsVisible(false);
-            }
+            setIsVisible(false);
         }
     };
 
@@ -123,6 +122,7 @@ const DatePicker: React.FC<CalenderProps> = ({ title, placeholder, setDates, sta
                 setHoveredDate(null);
             }
         };
+
         window.addEventListener('mousedown', handleClickOutside);
         return () => {
             window.removeEventListener('mousedown', handleClickOutside);
@@ -202,5 +202,9 @@ const DatePicker: React.FC<CalenderProps> = ({ title, placeholder, setDates, sta
         </div>
     );
 }
+
+DatePicker.defaultProps = {
+    startAndEndDate: true,
+};
 
 export default DatePicker;
