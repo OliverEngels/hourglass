@@ -10,5 +10,9 @@ files:
 mac:
   target: "dmg"
   category: "public.app-category.developer-tools"
+  icon: "./public/icon/icon.ico"
 win:
   target: "nsis"
+  icon: "./public/icon/icon.icns"
+linux: 
+  icon: "./public/icon/icon.png"
