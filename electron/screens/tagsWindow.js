@@ -1,9 +1,9 @@
 const { BrowserWindow } = require('electron');
-const path = require('path')
+const path = require('path');
 
 let tagWindow = null;
 
-module.exports = function createTagsWindow() {
+module.exports = function createLoggerWindow() {
     if (!tagWindow) {
         tagWindow = new BrowserWindow({
             width: 1000,
@@ -22,11 +22,15 @@ module.exports = function createTagsWindow() {
             }
         });
 
-        tagWindow.loadURL('../out/tags.html');
+        if (process.env.ENV === 'prod') {
+            tagWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/tags.html`);
+        }
+        else {
+            tagWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/tags`);
+            tagWindow.webContents.openDevTools();
+        }
 
-        tagWindow.on('closed', () => {
-            tagWindow = null;
-        });
+        tagWindow.on('closed', () => { tagWindow = null; });
     } else {
         tagWindow.focus();
     }
