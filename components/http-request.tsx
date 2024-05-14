@@ -42,13 +42,11 @@ export function HttpRequest(url: string, options: FetchOptions = {}): { response
     const [state, setState] = useState({ response: null, isLoading: true, error: null });
 
     useEffect(() => {
-        console.log(options)
         HttpRequestPromise(url, options)
             .then((response) => {
                 setState({ response: response, isLoading: false, error: null });
             })
             .catch(_error => {
-                console.log(_error)
                 setState({ response: null, isLoading: false, error: _error });
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
