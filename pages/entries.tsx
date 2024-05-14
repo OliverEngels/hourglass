@@ -169,11 +169,19 @@ const Entries = () => {
                                 </tr>
                             ))}
                         </tbody>
+                        <tfoot>
+                            <tr className="bg-gray-100 text-gray-500 text-sm border-t font-bold">
+                                <td className="px-4 py-2 w-[115px] text-start"></td>
+                                <td className="px-4 py-2 text-start"></td>
+                                <td className="px-4 py-2 text-center"></td>
+                                <td className="px-4 py-2 text-center">Total: </td>
+                                <td className="px-4 py-2 text-center">{!isLoading && calculateTotalTime(response?.data !== undefined ? response.data : [])}</td>
+                                <td className="px-4 py-2 text-start"></td>
+                                <td className="px-4 py-2 flex"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 }
-                <div>
-                    <p className="text-sm text-gray-500">Total: {!isLoading && calculateTotalTime(response?.data !== undefined ? response.data : [])}</p>
-                </div>
             </div>
         )
     }, [isLoading, responseDate]);
