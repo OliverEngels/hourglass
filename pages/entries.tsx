@@ -20,21 +20,18 @@ const Entries = () => {
     const [html, setHtml] = useState(<></>);
     const tableRef = useRef(null);
 
-    const previousDay = new Date(Date.now());
-    previousDay.setDate(previousDay.getDate() - 1);
+    const [formData, setFormData] = useState<FormData>(
+        { startDate: new Date(Date.now()), endDate: new Date(Date.now()), tags: [], search: '' });
 
     const { response, isLoading } = HttpRequest('/api/entries', {
         method: 'POST',
         body: JSON.stringify({
-            startDate: previousDay,
-            endDate: new Date(Date.now())
+            startDate: new Date(formData.startDate.getFullYear(), formData.startDate.getMonth(), formData.startDate.getDate(), 1, 0, 0),
+            endDate: new Date(formData.endDate.getFullYear(), formData.endDate.getMonth(), formData.endDate.getDate(), 23, 59, 59)
         })
     });
 
     const [responseDate, setResponseData] = useState([]);
-
-    const [formData, setFormData] = useState<FormData>(
-        { startDate: new Date(Date.now()), endDate: new Date(Date.now()), tags: [], search: '' });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, placeholder?: string) => {
         const { name, value } = e.target;
