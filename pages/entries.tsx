@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { TagData } from "../components/schemes/api-tag";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
 import { exportTableToCSV } from "@components/helpers/csv.export";
+import { calculateTotalTime, formatMinutesToHours, getTimeDifference } from "@components/helpers/time.format";
 
 type FormData = {
     startDate: Date;
@@ -50,7 +51,7 @@ const Entries = () => {
 
     useEffect(() => {
         updateEntries();
-    }, [formData]);
+    }, [formData.endDate, formData.startDate, formData.tags]);
 
     const updateEntries = () => {
         HttpRequestPromise('/api/entries', {
@@ -80,31 +81,6 @@ const Entries = () => {
             tags: updatedTags
         }));
     };
-
-    const parseTimeToMinutes = (time: string): number => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours * 60 + minutes;
-    }
-
-    const getTimeDifference = (startTime: string, endTime: string): number => {
-        return parseTimeToMinutes(endTime) - parseTimeToMinutes(startTime);
-    }
-
-    const formatMinutesToHours = (minutes: number): string => {
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
-    }
-
-    const calculateTotalTime = (timeRanges: any): string => {
-        let totalMinutes = 0;
-
-        for (const range of timeRanges) {
-            totalMinutes += getTimeDifference(range.starttime, range.endtime);
-        }
-
-        return formatMinutesToHours(totalMinutes);
-    }
 
     useEffect(() => {
         if (response)
