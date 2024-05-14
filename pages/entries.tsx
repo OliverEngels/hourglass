@@ -30,6 +30,7 @@ const Entries = () => {
             endDate: new Date(Date.now())
         })
     });
+
     const [responseDate, setResponseData] = useState([]);
 
     const [formData, setFormData] = useState<FormData>(
@@ -48,10 +49,6 @@ const Entries = () => {
             startDate: _startDate, endDate: _endDate
         }));
     }
-
-    useEffect(() => {
-        updateEntries();
-    }, [formData.endDate, formData.startDate, formData.tags]);
 
     const updateEntries = () => {
         HttpRequestPromise('/api/entries', {
@@ -85,7 +82,11 @@ const Entries = () => {
     useEffect(() => {
         if (response)
             setResponseData(response.data);
-    }, [response])
+    }, [response]);
+
+    useEffect(() => {
+        updateEntries();
+    }, [formData.endDate, formData.startDate, formData.tags]);
 
     useEffect(() => {
         setHtml(
@@ -93,7 +94,7 @@ const Entries = () => {
                 <div className="flex w-full mb-3 justify-start space-x-3">
                     <DatePicker setDates={handleDate} title="Date" placeholder={formatDate(new Date(Date.now()))} />
                     <TagSelector setselectedTags={handleTags} selectedTags={formData.tags} />
-                    <Input value={formData.search} setValueOnChange={handleChange} setValueOnEnter={handleChange} title="Search" placeholder="Example: C#" />
+                    <Input value={formData.search} setValueOnChange={handleChange} setValueOnEnter={updateEntries} title="Search" placeholder="Example: C#" />
                     <div className="mt-5 relative flex flex-col items-center">
                         <button className="bg-teal-500 hover:bg-teal-600 peer px-3 py-2.5 text-white rounded" onClick={updateEntries}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="white">
@@ -151,7 +152,7 @@ const Entries = () => {
                                 <td className="px-4 py-2 text-start"></td>
                                 <td className="px-4 py-2 text-center"></td>
                                 <td className="px-4 py-2 text-center">Total: </td>
-                                <td className="px-4 py-2 text-center">{!isLoading && calculateTotalTime(response?.data !== undefined ? response.data : [])}</td>
+                                <td className="px-4 py-2 text-center">{!isLoading && calculateTotalTime(responseDate !== undefined ? responseDate : [])}</td>
                                 <td className="px-4 py-2 text-start"></td>
                                 <td className="px-4 py-2 flex"></td>
                             </tr>
@@ -160,7 +161,7 @@ const Entries = () => {
                 }
             </div>
         )
-    }, [isLoading, responseDate]);
+    }, [isLoading, responseDate, formData]);
 
     return html;
 }
