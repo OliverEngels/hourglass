@@ -3,9 +3,10 @@ import DatePicker from "@components/datepicker.client";
 import TagSelector from "@components/tag-selector.client";
 import { Input } from "@components/form-elements.client";
 import { formatDate } from "@components/helpers/datetime.format";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TagData } from "../components/schemes/api-tag";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
+import { exportTableToCSV } from "@components/helpers/csv.export";
 
 type FormData = {
     startDate: Date;
@@ -16,6 +17,7 @@ type FormData = {
 
 const Entries = () => {
     const [html, setHtml] = useState(<></>);
+    const tableRef = useRef(null);
 
     const previousDay = new Date(Date.now());
     previousDay.setDate(previousDay.getDate() - 1);
@@ -39,7 +41,7 @@ const Entries = () => {
 
     const handleDate = (date: { startDate: Date, endDate: Date }) => {
         const _startDate = new Date(date.startDate.getFullYear(), date.startDate.getMonth(), date.startDate.getDate(), 1, 0, 0);
-        const _endDate = new Date(date.endDate.getFullYear(), date.endDate.getMonth(), date.endDate.getDate(), 24, 0, 0);
+        const _endDate = new Date(date.endDate.getFullYear(), date.endDate.getMonth(), date.endDate.getDate(), 23, 59, 59);
         setFormData(prev => ({
             ...prev,
             startDate: _startDate, endDate: _endDate
@@ -127,7 +129,7 @@ const Entries = () => {
                         </div>
                     </div>
                     <div className="mt-5 relative flex flex-col items-center">
-                        <button className="peer px-3 py-2.5 text-white bg-indigo-500 rounded hover:bg-indigo-600">
+                        <button className="peer px-3 py-2.5 text-white bg-indigo-500 rounded hover:bg-indigo-600" onClick={() => exportTableToCSV(tableRef, { startDate: formData.startDate, endDate: formData.endDate })}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20" height="20" fill="white">
                                 <path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM216 232V334.1l31-31c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-72 72c-9.4 9.4-24.6 9.4-33.9 0l-72-72c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l31 31V232c0-13.3 10.7-24 24-24s24 10.7 24 24z" />
                             </svg>
@@ -138,7 +140,7 @@ const Entries = () => {
                     </div>
                 </div>
                 {isLoading ? <p>Loading</p> :
-                    <table className="min-w-full table-auto rounded overflow-hidden">
+                    <table className="min-w-full table-auto rounded overflow-hidden" ref={tableRef}>
                         <thead className="bg-indigo-600 text-white text-base h-12 leading-8 border-b-[1px] border-indigo-700">
                             <tr>
                                 <th className="px-4 py-2 font-light text-start">Date</th>

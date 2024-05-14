@@ -36,3 +36,13 @@ export const getWeekNumber = (date) => {
     const pastDaysOfYear = (+date - +firstDayOfYear) / 86400000;
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 };
+
+export const normalizeDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth().toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    const normalized = `${year}-${month}-${day}`;
+
+    return normalized;
+}
