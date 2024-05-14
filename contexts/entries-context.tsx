@@ -32,7 +32,7 @@ export const EntryProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 body: JSON.stringify(newEntry)
             });
 
-            return data;
+            return { response: data, error: null };
         } catch (error) {
             console.error('Error creating entry:', error);
             return { response: null, error: error.message || error };
