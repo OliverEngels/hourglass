@@ -119,11 +119,11 @@ const Entries = () => {
                             <tr>
                                 <th className="px-4 py-2 font-light text-start">Date</th>
                                 <th className="px-4 py-2 font-light text-start">Description</th>
-                                <th className="px-4 py-2 font-light text-center">Start</th>
-                                <th className="px-4 py-2 font-light text-center">End</th>
+                                <th className="px-4 py-2 font-light text-center hidden lg:table-cell">Start</th>
+                                <th className="px-4 py-2 font-light text-center hidden lg:table-cell">End</th>
                                 <th className="px-4 py-2 font-light text-center">Duration</th>
-                                <th className="px-4 py-2 font-light text-start">Notes</th>
-                                <th className="px-4 py-2 font-light text-start">Tags</th>
+                                <th className="px-4 py-2 font-light text-start hidden lg:table-cell">Notes</th>
+                                <th className="px-4 py-2 font-light text-start hidden sm:table-cell">Tags</th>
                             </tr>
                         </thead>
                         <tbody className="scrollable-tbody max-h-full w-full">
@@ -131,11 +131,11 @@ const Entries = () => {
                                 <tr className="bg-gray-100 text-gray-500 text-sm border-t" id={e.id} key={`row-${i}`}>
                                     <td className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
                                     <td className="px-4 py-2 text-start">{e.description}</td>
-                                    <td className="px-4 py-2 text-center">{e.starttime}</td>
-                                    <td className="px-4 py-2 text-center">{e.endtime}</td>
+                                    <td className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
+                                    <td className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
                                     <td className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
-                                    <td className="px-4 py-2 text-start">{e.notes}</td>
-                                    <td className="px-4 py-2 flex">
+                                    <td className="px-4 py-2 text-start hidden lg:table-cell">{e.notes}</td>
+                                    <td className="px-4 py-2  hidden sm:flex">
                                         {e.tags.map((b, j) => (
                                             <Badge text={b.value} color={b.color} key={`badge-${e._id}-${j}`} />
                                         ))}
@@ -146,12 +146,12 @@ const Entries = () => {
                         <tfoot>
                             <tr className="bg-gray-100 text-gray-500 text-sm border-t font-bold">
                                 <td className="px-4 py-2 w-[115px] text-start"></td>
-                                <td className="px-4 py-2 text-start"></td>
-                                <td className="px-4 py-2 text-center"></td>
-                                <td className="px-4 py-2 text-center">Total: </td>
+                                <td className="px-4 py-2 text-start hidden lg:table-cell"></td>
+                                <td className="px-4 py-2 text-end hidden lg:table-cell"></td>
+                                <td className="px-4 py-2 text-end">Total: </td>
                                 <td className="px-4 py-2 text-center">{!isLoading && calculateTotalTime(responseDate !== undefined ? responseDate : [])}</td>
-                                <td className="px-4 py-2 text-start"></td>
-                                <td className="px-4 py-2 flex"></td>
+                                <td className="px-4 py-2 text-start hidden lg:table-cell"></td>
+                                <td className="px-4 py-2  hidden sm:flex"></td>
                             </tr>
                         </tfoot>
                     </table>
