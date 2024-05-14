@@ -8,7 +8,7 @@ interface CalendarProps {
     setDates: (dates: { startDate?: Date; endDate?: Date }) => void;
 }
 
-const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, startAndEndDate }) => {
+const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, startAndEndDate = true }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState({
         startDate: new Date(Date.now()),
@@ -202,9 +202,5 @@ const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, sta
         </div>
     );
 }
-
-DatePicker.defaultProps = {
-    startAndEndDate: true,
-};
 
 export default DatePicker;
