@@ -153,7 +153,7 @@ const Entries = () => {
                         <tbody className="scrollable-tbody max-h-full w-full">
                             {responseDate.map((e, i) => (
                                 <tr className="bg-gray-100 text-gray-500 text-sm border-t" id={e.id} key={`row-${i}`}>
-                                    <td className="px-4 py-2 text-start">{e.date.split("T")[0]}</td>
+                                    <td className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
                                     <td className="px-4 py-2 text-start">{e.description}</td>
                                     <td className="px-4 py-2 text-center">{e.starttime}</td>
                                     <td className="px-4 py-2 text-center">{e.endtime}</td>
