@@ -135,8 +135,8 @@ const NewEntryForm: React.FC = () => {
                 <TagSelector selectedTags={formData.tags} setselectedTags={handleTags} error={response.find(e => e.element == 'tags')?.error} />
             </div>
 
-            {response.length != 0 && <div className={`my-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>Entry was not inserted</div>}
-            <div className="relative flex justify-center items-center">
+            {response.length != 0 && <div className={`mt-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>Entry was not inserted</div>}
+            <div className="relative flex justify-center items-center mt-2">
                 <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
                     Submit
                 </button>
