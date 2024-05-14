@@ -31,7 +31,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
-    "electron": "^29.3.0",
+    "electron": "^30.0.3",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
     "electron-reload": "^2.0.0-alpha.1",
