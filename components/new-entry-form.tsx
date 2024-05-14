@@ -70,7 +70,7 @@ const NewEntryForm: React.FC = () => {
         }
         else {
             setResponse([]);
-            setFormData({ date: null, starttime: '', endtime: '', description: '', notes: '', tags: [] });
+            setFormData({ date: new Date(Date.now()), starttime: '', endtime: '', description: '', notes: '', tags: [] });
         }
     };
 
