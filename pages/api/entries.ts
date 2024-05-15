@@ -31,7 +31,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             const query = conditions.length > 0 ? { $and: conditions } : {};
             const data = await db.collection("entries").find(query).toArray();
 
-
             const entries: TimeEntryData[] = [];
             data.map((e, i) => {
                 entries[i] = {
@@ -45,7 +44,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 };
             });
 
-            res.status(200).json({ success: true, data: entries });
+            const groupedByDate = entries.reduce((acc, obj) => {
+                //@ts-ignore
+                const date = obj.date.toISOString().slice(0, 10);
+
+                if (!acc[date]) {
+                    acc[date] = [];
+                }
+                acc[date].push(obj);
+                return acc;
+            }, {} as { [date: string]: TimeEntryData[] });
+
+            for (const date in groupedByDate) {
+                groupedByDate[date].sort((a, b) => (a.starttime < b.starttime ? -1 : 1));
+            }
+
+            const sortedArray = Object.values(groupedByDate).reduce((acc, objs) => acc.concat(objs), []);
+
+            res.status(200).json({ success: true, data: sortedArray });
             break;
 
         default:
