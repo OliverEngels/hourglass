@@ -6,8 +6,9 @@ let tagWindow = null;
 module.exports = function createLoggerWindow() {
     if (!tagWindow) {
         tagWindow = new BrowserWindow({
-            width: 1000,
+            width: 500,
             minWidth: 300,
+            maxWidth: 700,
             height: 500,
             minHeight: 500,
             resizable: false,
@@ -27,7 +28,7 @@ module.exports = function createLoggerWindow() {
         }
         else {
             tagWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/tags`);
-            tagWindow.webContents.openDevTools();
+            // tagWindow.webContents.openDevTools();
         }
 
         tagWindow.on('closed', () => { tagWindow = null; });
