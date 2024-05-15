@@ -9,7 +9,7 @@ module.exports = function createLoggerWindow() {
         loggerWindow = new BrowserWindow({
             width: 300,
             minWidth: 300,
-            height: 500,
+            height: 550,
             minHeight: 400,
             resizable: true,
             frame: false,

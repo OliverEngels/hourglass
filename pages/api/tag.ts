@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         case 'POST':
             try {
                 const client = await clientPromise;
-                const db = client.db('hourglass');
+                const db = client.db(process.env.DB);
                 const collection = db.collection('tags');
 
                 value['subtype'] = 'misc';
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         case 'PUT':
             try {
                 const client = await clientPromise;
-                const db = client.db('hourglass');
+                const db = client.db(process.env.DB);
                 const collection = db.collection('tags');
 
                 const { _id, ...updateData } = req.body;

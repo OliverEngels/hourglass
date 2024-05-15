@@ -3,6 +3,7 @@ import { ApiResponse, TagData } from '../../components/schemes/api-tag';
 import clientPromise from './mongo';
 import CORS from './middleware';
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     await CORS(req, res);
 
@@ -17,11 +18,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 tags[i] = {
                     id: e._id,
                     value: e.value,
-                    color: 'orange'
+                    subtype: e.subtype,
+                    color: e.color
                 };
             });
 
-            res.status(200).json({ success: true, data: data });
+            res.status(200).json({ success: true, data: tags });
             break;
 
         default:
