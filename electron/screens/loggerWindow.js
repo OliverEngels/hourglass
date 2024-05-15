@@ -9,8 +9,10 @@ module.exports = function createLoggerWindow() {
         loggerWindow = new BrowserWindow({
             width: 300,
             minWidth: 300,
-            height: 550,
+            maxWidth: 300,
+            height: 500,
             minHeight: 400,
+            maxHeight: 500,
             resizable: true,
             frame: false,
             icon: process.platform === 'darwin' ? path.join(__dirname, '..', 'public', 'icon', 'icon.icns') :

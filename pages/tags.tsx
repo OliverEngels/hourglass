@@ -1,10 +1,6 @@
 import Badge from "@components/tag.client";
-import DatePicker from "@components/datepicker.client";
-import TagSelector from "@components/tag-selector.client";
 import { Input } from "@components/form-elements.client";
-import { formatDate } from "@components/helpers/datetime.format";
 import { useEffect, useState } from "react";
-import { TagData } from "../components/schemes/api-tag";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
 
 const Tags = () => {
@@ -59,10 +55,22 @@ const Tags = () => {
         };
     }, [oldId]);
 
-    const handleColorChange = (colorValue: string) => {
+    const handleColorChange = (colorValue: string, e) => {
         console.log(`Selected color: ${colorValue}`);
 
         const color = document.getElementById(`color-${oldId}`);
+
+        HttpRequestPromise(`/api/tag/${e.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                value: e.value,
+                subtype: e.subtype,
+                color: colorValue
+            })
+        }).then((e) => {
+            //console.log(e)
+            setResponseData(e.data);
+        })
     };
 
     useEffect(() => {
@@ -82,7 +90,7 @@ const Tags = () => {
                     </div>
                 </div>
                 {isLoading ? <p>Loading</p> :
-                    <table className="min-w-full table-auto rounded overflow-hidden">
+                    <table className="min-w-full table-auto rounded overflow-hidden z-0">
                         <thead className="bg-indigo-600 text-white text-base h-12 leading-8 border-b-[1px] border-indigo-700">
                             <tr>
                                 <th className="px-4 py-2 font-light text-start">Tag</th>
@@ -98,21 +106,21 @@ const Tags = () => {
                                     </td>
 
                                     <td className="px-4 py-2 text-start">{e.subtype}</td>
-                                    <td className="px-4 py-2 text-start relative flex flex-col items-center">
+                                    <td className="px-4 py-2 text-start absolute flex flex-col items-center">
                                         <div
                                             className={`flex justify-center items-center w-5 h-5 rounded cursor-pointer m-1 bg-${e.color}-400`}
                                             id={`color-${e.id}`}
                                             onClick={() => handleColorPopup(e.id)}
                                         />
                                         <div
-                                            className="flex justify-start flex-wrap absolute bg-white rounded opacity-0 transition-opacity duration-200 bottom-full pointer-events-none p-1 shadow w-[64px] sm:w-[92px] xl:w-[260px]"
+                                            className="flex justify-start flex-wrap absolute bg-white rounded opacity-0 transition-opacity duration-200 bottom-full pointer-events-none p-1 shadow w-[64px] sm:w-[92px] xl:w-[260px] z-50"
                                             id={`select-${e.id}`}>
                                             {colors.map(c => {
                                                 const color = c.toLocaleLowerCase();
                                                 return <div
                                                     key={color}
                                                     className={`flex justify-center items-center w-5 h-5 rounded cursor-pointer m-1 bg-${color}-400 hover:bg-${color}-500`}
-                                                    onClick={() => handleColorChange(color)}
+                                                    onClick={() => handleColorChange(color, e)}
                                                 />
                                             })}
                                         </div>

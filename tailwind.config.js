@@ -28,12 +28,8 @@ module.exports = {
     'ring-red-500/10', 'ring-blue-500/10', 'ring-green-500/10', 'ring-yellow-500/10', 'ring-purple-500/10', 'ring-orange-500/10', 'ring-pink-500/10',
     'bg-red-100', 'bg-blue-100', 'bg-green-100', 'bg-yellow-100', 'bg-purple-100', 'bg-orange-100', 'bg-pink-100',
     {
-      pattern: /text-(red|green|blue|yellow|pink|purple|orange|gray)-[1-7]00/,
+      pattern: /(bg|border|ring|text)-(red|green|blue|yellow|pink|purple|orange|gray|lime)-[1-7](00|0)/,
       variants: ['hover', 'focus'],
-    },
-    {
-      pattern: /(bg|border)-(red|green|blue|yellow|pink|purple|orange|gray|lime)-[1-7]00/,
-      variants: ['hover'],
     }
   ],
   plugins: [],

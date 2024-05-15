@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 const client = await clientPromise;
                 const db = client.db(process.env.DB);
                 const collection = db.collection('tags');
-
+                console.log("here")
                 const { _id, ...updateData } = req.body;
 
                 const result = await collection.updateOne(
