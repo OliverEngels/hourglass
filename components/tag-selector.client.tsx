@@ -46,7 +46,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags
                 })
                     .then((data) => {
                         if (data) {
-                            setselectedTags([...selectedTags, { value: fullSuggestion, color: 'orange' }]);
+                            setselectedTags([...selectedTags, { value: fullSuggestion, color: 'gray' }]);
                         } else {
                             setSomething('Api Error: no tag added!');
                         }
