@@ -8,6 +8,7 @@ import { TagData } from "../components/schemes/api-tag";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
 import { exportTableToCSV } from "@components/helpers/csv.export";
 import { calculateTotalTime, formatMinutesToHours, getTimeDifference } from "@components/helpers/time.format";
+import React from "react";
 
 type FormData = {
     startDate: Date;
@@ -134,8 +135,15 @@ const Entries = () => {
                                     <td className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
                                     <td className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
                                     <td className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
-                                    <td className="px-4 py-2 text-start hidden lg:table-cell">{e.notes}</td>
-                                    <td className="px-4 py-2  hidden sm:flex">
+                                    <td className="px-4 py-2 text-start hidden lg:table-cell">
+                                        {e.notes.split('\n').map((line, index) => (
+                                            <React.Fragment key={index}>
+                                                {line}
+                                                <br />
+                                            </React.Fragment>
+                                        ))}
+                                    </td>
+                                    <td className="px-4 py-2 hidden sm:flex items-center">
                                         {e.tags.map((b, j) => (
                                             <Badge text={b.value} color={b.color} key={`badge-${e._id}-${j}`} />
                                         ))}
