@@ -26,6 +26,10 @@ const NewEntryForm: React.FC = () => {
         setFormData(prev => ({ ...prev, [_name]: placeholder ? placeholder : value }));
     };
 
+    const handleEnterPress = (value: string) => {
+        setFormData(prev => ({ ...prev, notes: value + '\n' }));
+    }
+
     const handleDate = (date) => {
         setFormData(prev => ({
             ...prev,
@@ -129,7 +133,7 @@ const NewEntryForm: React.FC = () => {
             </div>
 
             <Input value={formData.description} setValueOnChange={handleChange} title="Description" placeholder="Description" error={response.find(e => e.element == 'description')?.error} />
-            <TextArea value={formData.notes} setValueOnChange={handleChange} title="Notes" placeholder="Notes" error={response.find(e => e.element == 'notes')?.error} />
+            <TextArea value={formData.notes} setValueOnChange={handleChange} setValueOnEnter={handleEnterPress} title="Notes" placeholder="Notes" error={response.find(e => e.element == 'notes')?.error} />
 
             <div className="relative mt-5">
                 <TagSelector selectedTags={formData.tags} setselectedTags={handleTags} error={response.find(e => e.element == 'tags')?.error} />

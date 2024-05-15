@@ -52,8 +52,9 @@ export const TextArea: React.FC<InputProps> = ({ title, placeholder, value, setV
     };
 
     const handleKeyDown = (e) => {
+        if (!setValueOnEnter) return;
         if (e.key == 'Enter') {
-            setValueOnEnter && setValueOnEnter(value)
+            setValueOnEnter(value)
         }
     }
 
@@ -68,7 +69,7 @@ export const TextArea: React.FC<InputProps> = ({ title, placeholder, value, setV
                 cols={5}
                 name={title}
                 id={title}
-                value={value.toString()}
+                value={value}
                 onChange={(e) => handleOnChange(e)}
                 onKeyDown={(e) => handleKeyDown(e)}
                 onDoubleClick={(e) => handleDoubleClick(e)}
