@@ -112,7 +112,7 @@ const Entries = () => {
 
     useEffect(() => {
         setHtml(
-            <div className="container mx-auto mt-10 mb-10">
+            <div className="container mx-auto mt-4 mb-10">
                 <div className="flex w-full mb-3 justify-start space-x-3">
                     <div className="mt-5 relative flex flex-col items-center">
                         <button className={`${selectedRows.length > 0 ? 'bg-red-400 hover:bg-red-500' : 'bg-gray-400 pointer-events-none'} peer px-3 py-2.5 text-white rounded`} onClick={handleDeleteSelectedRow}>

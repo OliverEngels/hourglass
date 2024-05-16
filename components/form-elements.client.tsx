@@ -38,7 +38,7 @@ export const Input: React.FC<InputProps> = ({ title, placeholder, value, setValu
             />
             {error != null && error != "" && <p className="text-red-400 text-xs">{error}</p>}
             <label
-                className={`absolute left-3 -top-2.5 text-gray-500 transition-all duration-200 ease-in-out  peer-focus:text-sm  peer-focus:text-indigo-600 bg-slate-200 px-2 text-sm font-medium ${error != null && error != "" && " text-red-400"}`}
+                className={`pointer-events-none absolute left-3 -top-2.5 text-gray-500 transition-all duration-200 ease-in-out  peer-focus:text-sm  peer-focus:text-indigo-600 bg-slate-200 px-2 text-sm font-medium ${error != null && error != "" && " text-red-400"}`}
             >
                 {title}
             </label>
