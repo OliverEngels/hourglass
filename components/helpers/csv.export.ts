@@ -10,9 +10,15 @@ export const exportTableToCSV = (tableRef: RefObject<HTMLElement>, dates: { star
 
         for (let j = 0; j < cols.length; j++) {
             let value = "";
-            if (j > 0) {
+            if (j > 0 && j != 5) {
                 //@ts-ignore
                 value = cols[j].innerText.replace('\n', ', ');
+            }
+            else if (j == 5) {
+                //@ts-ignore
+                const lastIndex = cols[j].innerText.lastIndexOf('\n');
+                //@ts-ignore
+                value = `"${cols[j].innerText.replace('\n', ', ').substring(0, lastIndex)}"`
             }
             else {
                 //@ts-ignore
