@@ -48,7 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     { $pull: { tags: { value: { $in: tags } } } }
                 );
 
-                console.log(deleteResult);
                 res.status(200).json({ success: true, data: deleteResult });
             }
             catch (e) {

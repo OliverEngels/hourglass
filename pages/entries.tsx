@@ -20,6 +20,7 @@ type FormData = {
 const Entries = () => {
     const [html, setHtml] = useState(<></>);
     const tableRef = useRef(null);
+    const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
     const [formData, setFormData] = useState<FormData>(
         { startDate: new Date(Date.now()), endDate: new Date(Date.now()), tags: [], search: '' });
@@ -86,10 +87,43 @@ const Entries = () => {
         updateEntries();
     }, [formData.endDate, formData.startDate, formData.tags]);
 
+
+    const handleSelectRow = (id: string) => {
+        if (selectedRows.includes(id)) {
+            const remainingTags = selectedRows.filter(e => e != id);
+            setSelectedRows(remainingTags);
+        } else {
+            setSelectedRows(prev => [...prev, id]);
+        }
+    };
+
+    const handleDeleteSelectedRow = () => {
+        HttpRequestPromise('/api/entries', {
+            method: 'DELETE',
+            body: JSON.stringify({ ids: selectedRows })
+        }).then(e => {
+            const remainingTags = responseDate.filter(t => !selectedRows.includes(t.id));
+            setResponseData(remainingTags);
+            setSelectedRows([]);
+        }).catch(e => {
+            console.log(e);
+        });
+    }
+
     useEffect(() => {
         setHtml(
             <div className="container mx-auto mt-10 mb-10">
                 <div className="flex w-full mb-3 justify-start space-x-3">
+                    <div className="mt-5 relative flex flex-col items-center">
+                        <button className={`${selectedRows.length > 0 ? 'bg-red-400 hover:bg-red-500' : 'bg-gray-400 pointer-events-none'} peer px-3 py-2.5 text-white rounded`} onClick={handleDeleteSelectedRow}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512" fill="white">
+                                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                            </svg>
+                        </button>
+                        <div className="peer-hover:flex absolute bottom-full mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded-md text-nowrap opacity-0 transition-opacity duration-200 peer-hover:opacity-100">
+                            delete
+                        </div>
+                    </div>
                     <DatePicker setDates={handleDate} title="Date" placeholder={formatDate(new Date(Date.now()))} />
                     <TagSelector setselectedTags={handleTags} selectedTags={formData.tags} />
                     <Input value={formData.search} setValueOnChange={handleChange} setValueOnEnter={updateEntries} title="Search" placeholder="Example: C#" />
@@ -118,6 +152,7 @@ const Entries = () => {
                     <table className="min-w-full table-auto rounded overflow-hidden" ref={tableRef}>
                         <thead className="bg-indigo-600 text-white text-base h-12 leading-8 border-b-[1px] border-indigo-700">
                             <tr>
+                                <th className="px-4 py-2 font-light text-start"></th>
                                 <th className="px-4 py-2 font-light text-start">Date</th>
                                 <th className="px-4 py-2 font-light text-start">Description</th>
                                 <th className="px-4 py-2 font-light text-center hidden lg:table-cell">Start</th>
@@ -130,6 +165,17 @@ const Entries = () => {
                         <tbody className="scrollable-tbody max-h-full w-full">
                             {responseDate.map((e, i) => (
                                 <tr className="bg-gray-100 text-gray-500 text-sm border-t" id={e.id} key={`row-${i}`}>
+                                    <td className="text-center">
+                                        <label className="checkbox-container">
+                                            <input
+                                                type="checkbox"
+                                                className="checkbox-hidden"
+                                                checked={selectedRows.includes(e.id)}
+                                                onChange={() => handleSelectRow(e.id)}
+                                            />
+                                            <span className="checkmark"></span>
+                                        </label>
+                                    </td>
                                     <td className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
                                     <td className="px-4 py-2 text-start">{e.description}</td>
                                     <td className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
@@ -153,6 +199,7 @@ const Entries = () => {
                         </tbody>
                         <tfoot>
                             <tr className="bg-gray-100 text-gray-500 text-sm border-t font-bold">
+                                <th className="px-4 py-2 font-light text-start"></th>
                                 <td className="px-4 py-2 w-[115px] text-start"></td>
                                 <td className="px-4 py-2 text-start hidden lg:table-cell"></td>
                                 <td className="px-4 py-2 text-end hidden lg:table-cell"></td>
@@ -166,7 +213,7 @@ const Entries = () => {
                 }
             </div>
         )
-    }, [isLoading, responseDate, formData]);
+    }, [isLoading, responseDate, formData, selectedRows]);
 
     return html;
 }
