@@ -3,3 +3,25 @@ textarea:focus {
     outline: none !important;
     border: none !important;
 }
+
+/* checkbox */
+.checkbox-container {
+    @apply flex items-center cursor-pointer justify-center;
+}
+
+.checkbox-hidden {
+    @apply hidden;
+}
+
+.checkmark {
+    @apply w-4 h-4 bg-white border border-gray-300 rounded inline-block flex justify-center items-center;
+}
+
+input:checked+.checkmark {
+    @apply bg-red-400 border-red-400;
+}
+
+input:checked+.checkmark::after {
+    content: "";
+    @apply block w-1.5 h-1.5 bg-white rounded absolute;
+}
