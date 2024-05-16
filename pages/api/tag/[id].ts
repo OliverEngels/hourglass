@@ -36,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             }
 
             const data = await db.collection("tags").find({}).toArray();
-
             const tags: TagData[] = [];
             data.map((e, i) => {
                 tags[i] = {
@@ -46,6 +45,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     color: e.color
                 };
             });
+
+            const entries = await db.collection('entries');
+            await entries.updateMany(
+                { "tags.value": updateData.value },
+                { $set: { "tags.$[elem]": updateData } },
+                { arrayFilters: [{ "elem.value": updateData.value }] }
+            );
 
             res.status(200).json({
                 success: true,

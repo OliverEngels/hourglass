@@ -18,7 +18,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 conditions.push({ date: { $gte: new Date(startDate), $lte: new Date(endDate) } });
             }
             if (tags && tags.length > 0) {
-                conditions.push({ tags: { $in: tags } });
+                const tagValues = tags.map(tag => tag.value);
+                conditions.push({ "tags.value": { $in: tagValues } });
             }
             if (search) {
                 conditions.push({
