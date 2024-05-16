@@ -128,10 +128,6 @@ const NewEntryForm: React.FC = () => {
                 <Input value={formData.endtime} setValueOnDoubleClick={handleChange} setValueOnChange={hanldeTimeChange} title="End Time" placeholder={placeholder} error={response.find(e => e.element == 'end_time')?.error} />
             </div>
 
-            <div className="relative mt-1 text-xs text-gray-500">
-                <p><b>Last Entry:</b> 15:00</p>
-            </div>
-
             <Input value={formData.description} setValueOnChange={handleChange} title="Description" placeholder="Description" error={response.find(e => e.element == 'description')?.error} />
             <TextArea value={formData.notes} setValueOnChange={handleChange} setValueOnEnter={handleEnterPress} title="Notes" placeholder="Notes" error={response.find(e => e.element == 'notes')?.error} />
 
