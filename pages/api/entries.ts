@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 }
                 if (tags && tags.length > 0) {
                     const tagValues = tags.map(tag => tag.value);
-                    conditions.push({ "tags.value": { $in: tagValues } });
+                    conditions.push({ "tags.value": { $all: tagValues } });
                 }
                 if (search) {
                     conditions.push({
