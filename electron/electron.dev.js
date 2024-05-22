@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain, session } = require('electron');
 require('./ipc');
 require('dotenv').config();
 
+let store;
+
 const createLoggerWindow = require('./screens/loggerWindow');
 const setupSettings = require('./setupSettings');
 
@@ -17,7 +19,7 @@ if (process.env.ENV === 'dev') {
     });
 }
 
-nextApp.prepare().then(() => {
+nextApp.prepare().then(async () => {
     const ses = session.defaultSession;
 
     ses.webRequest.onHeadersReceived((details, callback) => {
@@ -53,6 +55,23 @@ nextApp.prepare().then(() => {
         if (err) throw err;
         console.log(`> Ready on http://localhost:${process.env.ELECTRON_PORT}`);
     });
+
+    await import('electron-store').then((StoreModule) => {
+        store = new StoreModule.default();
+        //store.clear();
+    }).catch(err => {
+        console.error('Failed to load electron-store:', err);
+    });
 }).catch(ex => {
     console.error('Error during Next.js preparation:', ex.stack);
+});
+
+
+
+ipcMain.handle('getStoreValue', (event, key) => {
+    return store.get(key);
+});
+
+ipcMain.handle('setStoreValue', (event, key, value) => {
+    store.set(key, value);
 });

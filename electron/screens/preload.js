@@ -5,5 +5,7 @@ contextBridge.exposeInMainWorld('electron', {
     openTagsWindow: () => ipcRenderer.send('tags-window'),
     minimize: () => ipcRenderer.send('minimize'),
     maximize: () => ipcRenderer.send('maximize'),
-    closeWindow: () => ipcRenderer.send('close')
+    closeWindow: () => ipcRenderer.send('close'),
+    getStoreValue: (key) => ipcRenderer.invoke('getStoreValue', key),
+    setStoreValue: (key, value) => ipcRenderer.invoke('setStoreValue', key, value)
 });

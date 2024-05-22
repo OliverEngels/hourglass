@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
 require('./ipc');
 
+let store;
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -40,7 +42,7 @@ process.on('unhandledRejection', (reason, promise) => {
 const createLoggerWindow = require('./screens/loggerWindow');
 const setupSettings = require('./setupSettings');
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
     const ses = session.defaultSession;
 
     // Content-Security-Policy: connect-src 'self' http://localhost:4250;
@@ -56,6 +58,13 @@ app.whenReady().then(() => {
 
     createLoggerWindow();
     setupSettings();
+
+    await import('electron-store').then((StoreModule) => {
+        store = new StoreModule.default();
+        //store.clear();
+    }).catch(err => {
+        console.error('Failed to load electron-store:', err);
+    });
 });
 
 app.on('window-all-closed', () => {
@@ -68,4 +77,13 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createLoggerWindow();
     }
+});
+
+
+ipcMain.handle('getStoreValue', (event, key) => {
+    return store.get(key);
+});
+
+ipcMain.handle('setStoreValue', (event, key, value) => {
+    store.set(key, value);
 });
