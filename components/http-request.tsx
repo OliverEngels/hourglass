@@ -16,7 +16,9 @@ export async function HttpRequestPromise(
         if (!url) {
             throw new Error('URL is not defined.');
         }
-        const fetchUrl = process.env.NEXT_PUBLIC_ENV !== 'prod' ? url : process.env.NEXT_PUBLIC_APIURL + url;
+        const value = await window.electron.getStoreValue('serverIp');
+        const fetchUrl = value + url;
+
         const fetchOptions = {
             method: options.method || 'GET',
             headers: {

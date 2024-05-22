@@ -111,6 +111,7 @@ const Entries = () => {
     }
 
     useEffect(() => {
+
         setHtml(
             <div className="container mx-auto mt-4 mb-10">
                 <div className="flex w-full mb-3 justify-start space-x-3">

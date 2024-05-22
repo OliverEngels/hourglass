@@ -6,6 +6,7 @@ import DatePicker from '@components/datepicker.client';
 import { formatDate, roundToNearestQuarterAndFormat } from '@components/helpers/datetime.format';
 import TagSelector from '@components/tag-selector.client';
 import { TagData } from './schemes/api-tag';
+import { simple_hash } from './helpers/encryption';
 
 interface ErrorMessages {
     element: string
@@ -13,10 +14,13 @@ interface ErrorMessages {
 }
 
 const NewEntryForm: React.FC = () => {
+    const [serverIp, setServerIp] = useState(undefined);
+    const [uniqueId, setUniqueId] = useState(undefined);
     const [placeholder, setPlaceholder] = useState(roundToNearestQuarterAndFormat(new Date()));
     const [response, setResponse] = useState<ErrorMessages[]>([]);
     const { createEntry } = useEntry();
 
+    const [serverIpForm, setServerIpForm] = useState('');
     const [formData, setFormData] = useState<Entry>(
         { date: new Date(Date.now()), starttime: '', endtime: '', description: '', notes: '', tags: [] });
 
@@ -116,33 +120,73 @@ const NewEntryForm: React.FC = () => {
         setFormData(prev => ({ ...prev, [_name]: value }));
     };
 
-    return (
-        <form onKeyDown={handleKeyDown} onSubmit={handleSubmit}>
-            <div className="relative mt-5">
-                <DatePicker setDates={handleDate} title="Date" placeholder={formatDate(new Date(Date.now()))} startAndEndDate={false} />
-            </div>
+    useEffect(() => {
+        window.electron.getStoreValue('serverIp').then(value => {
+            setServerIp(value);
+        });
+        window.electron.getStoreValue('uniqueId').then(value => {
+            setUniqueId(value);
+            console.log(value);
+        });
+    }, []);
 
-            <div className="flex justify-items-stretch space-x-2">
-                <Input value={formData.starttime} setValueOnDoubleClick={handleChange} setValueOnChange={hanldeTimeChange} title="Start Time" placeholder={placeholder}
-                    error={response.find(e => e.element == 'start_time')?.error} />
-                <Input value={formData.endtime} setValueOnDoubleClick={handleChange} setValueOnChange={hanldeTimeChange} title="End Time" placeholder={placeholder} error={response.find(e => e.element == 'end_time')?.error} />
-            </div>
+    const handleServerIpStorage = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        window.electron.setStoreValue('serverIp', serverIpForm).then(() => {
+            setServerIp(serverIpForm);
+        });
+        const hash = simple_hash();
+        window.electron.setStoreValue('uniqueId', hash).then(() => {
+            setUniqueId(hash);
+        });
+    }
 
-            <Input value={formData.description} setValueOnChange={handleChange} title="Description" placeholder="Description" error={response.find(e => e.element == 'description')?.error} />
-            <TextArea value={formData.notes} setValueOnChange={handleChange} setValueOnEnter={handleEnterPress} title="Notes" placeholder="Notes" error={response.find(e => e.element == 'notes')?.error} />
+    const handleIpChange = (e: React.ChangeEvent<HTMLInputElement>, placeholder?: string) => {
+        const { value } = e.target;
+        setServerIpForm(value);
+    };
 
-            <div className="relative mt-5">
-                <TagSelector selectedTags={formData.tags} setselectedTags={handleTags} error={response.find(e => e.element == 'tags')?.error} />
-            </div>
+    if (!serverIp) {
+        return (
+            <form onSubmit={handleServerIpStorage} className='flex justify-center flex-col h-96'>
+                <Input value={serverIpForm} setValueOnChange={handleIpChange} title="Server Ip" placeholder="127.0.0.1:8081" />
+                <div className="relative flex justify-center items-center mt-2">
+                    <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
+                        Save
+                    </button>
+                </div>
+            </form>
+        );
+    } else {
+        return (
+            <form onKeyDown={handleKeyDown} onSubmit={handleSubmit}>
+                <div className="relative mt-5">
+                    <DatePicker setDates={handleDate} title="Date" placeholder={formatDate(new Date(Date.now()))} startAndEndDate={false} />
+                </div>
 
-            {response.length != 0 && <div className={`mt-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>Entry was not inserted</div>}
-            <div className="relative flex justify-center items-center mt-2">
-                <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
-                    Submit
-                </button>
-            </div>
-        </form>
-    );
+                <div className="flex justify-items-stretch space-x-2">
+                    <Input value={formData.starttime} setValueOnDoubleClick={handleChange} setValueOnChange={hanldeTimeChange} title="Start Time" placeholder={placeholder}
+                        error={response.find(e => e.element == 'start_time')?.error} />
+                    <Input value={formData.endtime} setValueOnDoubleClick={handleChange} setValueOnChange={hanldeTimeChange} title="End Time" placeholder={placeholder} error={response.find(e => e.element == 'end_time')?.error} />
+                </div>
+
+                <Input value={formData.description} setValueOnChange={handleChange} title="Description" placeholder="Description" error={response.find(e => e.element == 'description')?.error} />
+                <TextArea value={formData.notes} setValueOnChange={handleChange} setValueOnEnter={handleEnterPress} title="Notes" placeholder="Notes" error={response.find(e => e.element == 'notes')?.error} />
+
+                <div className="relative mt-5">
+                    <TagSelector selectedTags={formData.tags} setselectedTags={handleTags} error={response.find(e => e.element == 'tags')?.error} />
+                </div>
+
+                {response.length != 0 && <div className={`mt-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>Entry was not inserted</div>}
+                <div className="relative flex justify-center items-center mt-2">
+                    <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        );
+
+    }
 };
 
 export default NewEntryForm;
