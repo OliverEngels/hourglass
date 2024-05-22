@@ -23,7 +23,7 @@
     "react-dom": "^18"
   },
   "resolutions": {
-    "string-width": "4.2.0"
+    "string-width": "^5.0.1"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
