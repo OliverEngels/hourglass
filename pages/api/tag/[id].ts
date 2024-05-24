@@ -3,8 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../mongo';
 import { ObjectId } from 'mongodb';
 import { TagData } from '@components/schemes/api-tag';
+import CORS from '../middleware';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+    await CORS(req, res);
+
     if (req.method === 'PUT') {
         const { id } = req.query;
 

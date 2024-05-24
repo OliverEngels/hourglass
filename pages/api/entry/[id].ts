@@ -2,8 +2,11 @@ import { ApiResponse } from '@components/schemes/api-entry';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../mongo';
 import { ObjectId } from 'mongodb';
+import CORS from '../middleware';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+    await CORS(req, res);
+
     if (req.method === 'DELETE') {
         const { id } = req.query;
 
