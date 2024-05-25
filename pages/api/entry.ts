@@ -21,6 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 const db = client.db('hourglass');
                 const collection = db.collection('entries');
 
+                delete value.id;
+
                 const result = await collection.insertOne(value);
                 const objectId = result.insertedId;
 

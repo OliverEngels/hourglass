@@ -7,7 +7,7 @@ import CORS from '../middleware';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
     await CORS(req, res);
 
-    const { id, ...rest } = req.body;
+    const { id } = req.query;
     switch (req.method) {
         case 'DELETE':
             try {
@@ -37,16 +37,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             break;
         case 'PUT':
             try {
+                if (Array.isArray(id)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Invalid ID format'
+                    });
+                }
+
                 const client = await clientPromise;
                 const db = client.db('hourglass');
                 const collection = db.collection('entries');
 
-                const filter = { _id: new ObjectId(id) };
-                const updateDoc = {
-                    $set: rest,
-                };
+                const { ...updateData } = req.body;
+                delete updateData.id;
+                const dateObject = new Date(updateData.date);
                 const result = await collection.updateOne(
-                    filter, updateDoc, { upsert: true });
+                    { _id: new ObjectId(id) },
+                    { $set: { ...updateData, date: dateObject } },
+                    { upsert: false }
+                );
 
                 res.status(201).json({
                     success: true,

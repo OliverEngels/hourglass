@@ -9,7 +9,7 @@ import { simple_hash } from '@components/helpers/encryption';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/store';
 import { useDispatch } from '@redux/hooks';
-import { updateLog } from '@redux/reducers/log';
+import { setLog, updateLog } from '@redux/reducers/log';
 import { HttpRequestPromise } from '@components/http-request';
 
 interface ErrorMessages {
@@ -34,7 +34,12 @@ export default function Home() {
             if (response.update == "tag") {
                 dispatch(updateTag({ id: response.data.id, updatedTagData: response.data }));
             }
-            console.log('Data updated:', response);
+            if (response.update == 'select-entry') {
+                const obj2Map = new Map(response.data.tags.map(obj => [obj.value, obj]));
+                const matchingObjects = tags.filter(obj1 => obj2Map.has(obj1.value));
+
+                dispatch(updateLog({ ...response.data, tags: matchingObjects }));
+            }
         };
 
         const cleanupListener = window.electron.onDataUpdate(handleDataUpdate);
@@ -45,7 +50,7 @@ export default function Home() {
                 cleanupListener();
             }
         };
-    }, []);
+    }, [log]);
 
     const updateData = (newData: any) => {
         window.electron.sendUpdate(newData);
@@ -54,15 +59,30 @@ export default function Home() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, placeholder?: string) => {
         const { name, value } = e.target;
         const _name = name.replaceAll(" ", "").toLocaleLowerCase();
-        dispatch(updateLog({ log: { [_name]: placeholder ? placeholder : value } }));
+        dispatch(updateLog({ [_name]: placeholder ? placeholder : value }));
     };
 
     const handleEnterPress = (value: string) => {
-        dispatch(updateLog({ log: { notes: value + '\n' } }));
+        dispatch(updateLog({ notes: value + '\n' }));
     }
 
     const handleDate = (date) => {
-        dispatch(updateLog({ log: { date: new Date(date).toISOString() } }));
+        dispatch(updateLog({ date: new Date(date).toISOString() }));
+    }
+
+    const handleClear = (e) => {
+        e.preventDefault();
+
+        dispatch(updateLog({
+            id: '',
+            date: new Date(Date.now()).toISOString(),
+            starttime: '',
+            endtime: '',
+            description: '',
+            notes: '',
+            tags: []
+        }));
+        setResponse([]);
     }
 
     const handleTags = (newTags: Tag[] | ((tags: Tag[]) => Tag[])) => {
@@ -77,65 +97,78 @@ export default function Home() {
             return;
         }
 
-        dispatch(updateLog({
-            log: {
-                tags: updatedTags,
-            }
-        }));
+        dispatch(updateLog({ tags: updatedTags }));
     };
 
     useEffect(() => {
         const obj2Map = new Map(log.tags.map(obj => [obj.id, obj]));
         const matchingObjects = tags.filter(obj1 => obj2Map.has(obj1.id));
-        dispatch(updateLog({
-            log: {
-                tags: matchingObjects,
-            }
-        }))
+        dispatch(updateLog({ tags: matchingObjects }))
     }, [tags]);
 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        HttpRequestPromise('/api/entry',
-            {
-                method: 'POST',
-                body: JSON.stringify(log)
-            }
-        ).then(_response => {
-            updateData({
-                update: 'new-entry',
-                data: {
-                    ...log,
-                    id: _response.data.objectId
+        if (log.id != '') {
+            HttpRequestPromise(`/api/entry/${log.id}`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(log)
                 }
-            });
-
-            dispatch(updateLog({
-                log: {
-                    date: new Date(Date.now()).toISOString(),
-                    starttime: '',
-                    endtime: '',
-                    description: '',
-                    notes: '',
-                    tags: [],
+            ).then(_response => {
+                updateData({
+                    update: 'update-entry',
+                    data: log
+                })
+                handleClearLog();
+            }).catch(error => handleError(error));
+        } else {
+            HttpRequestPromise('/api/entry',
+                {
+                    method: 'POST',
+                    body: JSON.stringify(log)
                 }
-            }));
-        }).catch(error => {
-            if (error != null) {
-                const errors = error.split(', ');
-                const errorArray = [] as ErrorMessages[];
-                errors.forEach(element => {
-                    const formElement = element.match(/"(.*?)"/)[1];
-                    const error = element.replace(/^[^\s]+\s+/, '');
-                    errorArray.push({
-                        element: formElement,
-                        error: error
-                    });
+            ).then(_response => {
+                updateData({
+                    update: 'new-entry',
+                    data: {
+                        ...log,
+                        id: _response.data.objectId
+                    }
                 });
-                setResponse(errorArray);
-            }
+
+                handleClearLog();
+            }).catch(error => handleError(error));
+        }
+    }
+
+    const handleError = (error) => {
+        if (error != null)
+            return;
+
+        const errors = error.split(', ');
+        const errorArray = [] as ErrorMessages[];
+        errors.forEach(element => {
+            const formElement = element.match(/"(.*?)"/)[1];
+            const error = element.replace(/^[^\s]+\s+/, '');
+            errorArray.push({
+                element: formElement,
+                error: error
+            });
         });
+        setResponse(errorArray);
+    }
+
+    const handleClearLog = () => {
+        dispatch(updateLog({
+            id: '',
+            date: new Date(Date.now()).toISOString(),
+            starttime: '',
+            endtime: '',
+            description: '',
+            notes: '',
+            tags: []
+        }));
     }
 
     useEffect(() => {
@@ -173,7 +206,7 @@ export default function Home() {
             value = value.substring(0, 5);
         }
 
-        dispatch(updateLog({ log: { [_name]: value } }));
+        dispatch(updateLog({ [_name]: value }));
     };
 
     useEffect(() => {
@@ -238,11 +271,26 @@ export default function Home() {
                         />
                     </div>
 
-                    {response.length != 0 && <div className={`mt-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>Entry was not inserted</div>}
-                    <div className="relative flex justify-center items-center mt-2">
-                        <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
-                            Submit
-                        </button>
+                    {response.length != 0 &&
+                        <div className={`mt-2 text-xs text-center ${response.length != 0 ? 'text-red-500' : 'text-gray-400'} `}>
+                            Entry was not inserted
+                        </div>
+                    }
+                    <div className="relative flex justify-center items-center mt-2 gap-x-2">
+                        {log.id != '' ?
+                            <>
+                                <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-7 text-xs rounded-md" onClick={e => handleClear(e)}>
+                                    Cancel
+                                </button>
+                                <button className="bg-lime-500 hover:bg-lime-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
+                                    Update
+                                </button>
+                            </>
+                            :
+                            <button className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-7 text-xs rounded-md" type="submit">
+                                Submit
+                            </button>
+                        }
                     </div>
                 </form>
                 <div className="mt-3 text-xs flex justify-center gap-x-2 text-gray-500">

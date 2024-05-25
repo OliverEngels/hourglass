@@ -3,6 +3,7 @@ import { TagData, tagScheme } from './api-tag';
 import { ObjectId } from 'mongodb';
 
 const entryScheme = Joi.object({
+    id: Joi.optional(),
     date: Joi.date().required(),
     starttime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required(),
     endtime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required(),

@@ -12,7 +12,7 @@ import { Tag, createTags, deleteTag, updateTag } from "@redux/reducers/tags";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import { useDispatch } from "@redux/hooks";
-import { createEntries, createEntry, deleteEntry } from "@redux/reducers/entries";
+import { createEntries, createEntry, deleteEntry, updateEntry } from "@redux/reducers/entries";
 
 type FormData = {
     startDate: Date;
@@ -57,11 +57,14 @@ const Entries = () => {
                 }));
             }
             if (response.update == "new-entry") {
-                const entryDate = new Date(response.data.date);
                 if (new Date(response.data.date) > formData.startDate &&
                     new Date(response.data.date) < formData.endDate) {
                     dispatch(createEntry(response.data));
                 }
+            }
+            if (response.update == "update-entry") {
+                const data = response.data;
+                dispatch(updateEntry({ id: data.id, updatedEntryData: data }));
             }
         };
 
@@ -74,6 +77,11 @@ const Entries = () => {
             }
         };
     }, [formData, tags]);
+
+
+    const updateData = (newData: any) => {
+        window.electron.sendUpdate(newData);
+    };
 
     useEffect(() => {
         HttpRequestPromise('/api/tags')
@@ -230,7 +238,7 @@ const Entries = () => {
                             </tr>
                             :
                             entries.map((e, i) => (
-                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50 cursor-pointer h-full" id={e.id} key={`row-${i}`}>
+                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50 cursor-pointer h-full" id={e.id} key={`row-${i}`} onClick={() => updateData({ update: 'select-entry', data: e })}>
                                     <td className="text-center">
                                         <label className="checkbox-container">
                                             <input
