@@ -3,7 +3,7 @@ const path = require('path');
 
 let loggerWindow = null;
 
-module.exports = function createLoggerWindow() {
+function createLoggerWindow() {
     if (!loggerWindow) {
         const preloadPath = path.join(__dirname, 'preload.js');
         loggerWindow = new BrowserWindow({
@@ -37,3 +37,12 @@ module.exports = function createLoggerWindow() {
         loggerWindow.focus();
     }
 }
+
+function getLoggerWindow() {
+    return loggerWindow;
+}
+
+module.exports = {
+    getLoggerWindow,
+    createLoggerWindow
+};

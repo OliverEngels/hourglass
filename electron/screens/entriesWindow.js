@@ -3,7 +3,7 @@ const path = require('path');
 
 let entriesWindow = null;
 
-module.exports = function createEntriesWindow() {
+function createEntriesWindow() {
     if (!entriesWindow) {
         entriesWindow = new BrowserWindow({
             width: 1000,
@@ -35,3 +35,12 @@ module.exports = function createEntriesWindow() {
         entriesWindow.focus();
     }
 }
+
+function getEntriesWindow() {
+    return entriesWindow;
+}
+
+module.exports = {
+    createEntriesWindow,
+    getEntriesWindow
+};

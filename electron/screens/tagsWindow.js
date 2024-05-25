@@ -3,7 +3,7 @@ const path = require('path');
 
 let tagWindow = null;
 
-module.exports = function createLoggerWindow() {
+function createTagWindow() {
     if (!tagWindow) {
         tagWindow = new BrowserWindow({
             width: 500,
@@ -36,3 +36,12 @@ module.exports = function createLoggerWindow() {
         tagWindow.focus();
     }
 }
+
+function getTagWindow() {
+    return tagWindow;
+}
+
+module.exports = {
+    createTagWindow,
+    getTagWindow
+};

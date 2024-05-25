@@ -1,10 +1,12 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
-require('./ipc');
+
 require('dotenv').config();
 
 let store;
 
-const createLoggerWindow = require('./screens/loggerWindow');
+require('./ipc');
+
+const { createLoggerWindow } = require('./screens/loggerWindow');
 const setupSettings = require('./setupSettings');
 
 const dev = process.env.ENV === 'dev';
@@ -13,11 +15,9 @@ const next = require('next');
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-if (process.env.ENV === 'dev') {
-    require('electron-reload')(__dirname, {
-        electron: require(`${__dirname}/../node_modules/electron`)
-    });
-}
+require('electron-reload')(__dirname, {
+    electron: require(`${__dirname}/../node_modules/electron`)
+});
 
 nextApp.prepare().then(async () => {
     const ses = session.defaultSession;
@@ -68,6 +68,7 @@ nextApp.prepare().then(async () => {
 
 
 
+// Handle storing of data
 ipcMain.handle('getStoreValue', (event, key) => {
     return store.get(key);
 });
