@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, ChangeEvent, KeyboardEvent } from "react";
 import { HttpRequestPromise } from "./http-request";
-import { Tag, createTags } from "@redux/reducers/tags";
+import { Tag, createTag, createTags, deleteTag } from "@redux/reducers/tags";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 import TagElement from '@components/tag.client';
@@ -23,11 +23,41 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setSelectedTags
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const handleDataUpdate = (response: any) => {
+            if (response.update == "delete-tag") {
+                response.data.map(tagValue => {
+                    const tag = tags.find(t => t.value == tagValue);
+                    dispatch(deleteTag({ id: tag.id }));
+                });
+                handleRemoveTag(response.data);
+            }
+            if (response.update == "add-tag") {
+                const existingTag = tags.find(tag => tag.value == response.data.value);
+                if (!existingTag)
+                    dispatch(createTag(response.data));
+            }
+        };
+
+        const cleanupListener = window.electron.onDataUpdate(handleDataUpdate);
+
+        return () => {
+            if (typeof cleanupListener === 'function') {
+                //@ts-ignore
+                cleanupListener();
+            }
+        };
+    }, [tags]);
+
+    useEffect(() => {
+        handleTags();
+    }, [dispatch]);
+
+    const handleTags = () => {
         HttpRequestPromise(`/api/tags`)
             .then((response) => {
                 dispatch(createTags(response.data));
             });
-    }, [dispatch]);
+    }
 
     useEffect(() => {
         if (hiddenSpanRef.current) {
@@ -36,35 +66,32 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setSelectedTags
     }, [inputValue]);
 
     const handleAddTag = () => {
-        const fullSuggestion = inputValue + hint;
-        if (fullSuggestion && !selectedTags.some(tag => tag.value === fullSuggestion)) {
-            const existingTag = tags.find(tag => tag.value.includes(fullSuggestion));
+        const existingTag = tags.find(tag => tag.value == inputValue);
 
-            if (existingTag) {
-                setSelectedTags([...selectedTags, existingTag]);
-            } else {
-                HttpRequestPromise('/api/tag', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ value: fullSuggestion, color: 'orange' })
-                })
-                    .then((data) => {
-                        if (data) {
-                            setSelectedTags([...selectedTags, data.data]);
-                        } else {
-                            setMessage('API Error: no tag added!');
-                        }
-                    });
-            }
-            setInputValue('');
-            setHint('');
-            setMessage('');
+        if (existingTag) {
+            setSelectedTags([...selectedTags, existingTag]);
         } else {
-            setHint('');
-            setMessage('');
+            HttpRequestPromise('/api/tag', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ value: inputValue, color: 'gray' })
+            })
+                .then((data) => {
+                    if (data) {
+                        const newTag = { id: data.data.objectId, value: inputValue, color: 'gray', subtype: 'misc' };
+                        dispatch(createTag(newTag));
+                        setSelectedTags([...selectedTags, newTag]);
+                        window.electron.sendUpdate({ update: "add-tag", data: newTag });
+                    } else {
+                        setMessage('API Error: no tag added!');
+                    }
+                });
         }
+        setInputValue('');
+        setHint('');
+        setMessage('');
     };
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
