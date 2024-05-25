@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { HttpRequest, HttpRequestPromise } from "./http-request";
-import Tag from "./tag.client";
-import { TagData } from "./schemes/api-tag";
+import { HttpRequestPromise } from "./http-request";
+import { Tag, createTags } from "@redux/reducers/tags";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import TagElement from '@components/tag.client';
+import { useDispatch } from "@redux/hooks";
 
 interface TagSelectorProps {
-    selectedTags: TagData[]
+    selectedTags: Tag[]
     setselectedTags: Function
     error?: string
 }
 
 const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags, error }) => {
-    const { response, isLoading } = HttpRequest(`/api/tags`);
+    //const { response, isLoading } = HttpRequest(`/api/tags`);
+    const tags = useSelector((state: RootState) => state.tagState.tags);
+    const [html, setHtml] = useState(<></>);
 
     const [inputValue, setInputValue] = useState('');
     const [hint, setHint] = useState('');
@@ -18,6 +23,15 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags
     const [inputWidth, setInputWidth] = useState(0);
     const hiddenSpanRef = useRef(null);
     const inputRef = useRef(null);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        HttpRequestPromise(`/api/tags`)
+            .then((e) => {
+                dispatch(createTags(e.data));
+            });
+    }, []);
 
     useEffect(() => {
         if (hiddenSpanRef.current) {
@@ -28,7 +42,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags
     const handleAddTag = () => {
         const fullSuggestion = inputValue + hint;
         if (fullSuggestion && !selectedTags.some(i => i.value === fullSuggestion)) {
-            const tagObjInData = response.data.find(i => i.value.includes(fullSuggestion));
+            const tagObjInData = tags.find(i => i.value.includes(fullSuggestion));
             const tagObjInSuggestions = selectedTags.find(i => i.value.includes(fullSuggestion));
 
             if (tagObjInData !== undefined && tagObjInSuggestions === undefined) {
@@ -65,7 +79,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags
         const { value } = event.target;
         setInputValue(value);
         if (value) {
-            const filteredSuggestions = response.data.filter(tag =>
+            const filteredSuggestions = tags.filter(tag =>
                 tag.value.toLowerCase().startsWith(value.toLowerCase()) && !selectedTags.includes(tag)
             );
             if (filteredSuggestions.length > 0) {
@@ -97,48 +111,48 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setselectedTags
         }
     }
 
-    if (isLoading)
-        return (<p>Loading Tags...</p>);
+    useEffect(() => {
+        setHtml(
+            <div className="relative mt-5 w-full">
+                <div className="relative w-full">
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Add a tag..."
+                        className={`peer block w-full rounded-md border-0 py-2.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm bg-slate-200 ${error != null && error != undefined && ' ring-red-400 ring-2'}`}
+                        ref={inputRef}
+                    />
+                    {error != null && error != "" && <p className="text-red-400 text-xs">{error}</p>}
+                    <label
+                        className={`absolute left-3 -top-2.5 text-gray-500 transition-all duration-200 ease-in-out  peer-focus:text-indigo-600 peer-focus:text-sm bg-slate-200 px-2 text-sm font-medium ${error != null && error != "" && " text-red-400"}`}
+                    >
+                        Tag(s)
+                    </label>
 
-    return (
-        <div className="relative mt-5 w-full">
-            <div className="relative w-full">
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Add a tag..."
-                    className={`peer block w-full rounded-md border-0 py-2.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm bg-slate-200 ${error != null && error != undefined && ' ring-red-400 ring-2'}`}
-                    ref={inputRef}
-                />
-                {error != null && error != "" && <p className="text-red-400 text-xs">{error}</p>}
-                <label
-                    className={`absolute left-3 -top-2.5 text-gray-500 transition-all duration-200 ease-in-out  peer-focus:text-indigo-600 peer-focus:text-sm bg-slate-200 px-2 text-sm font-medium ${error != null && error != "" && " text-red-400"}`}
-                >
-                    Tag(s)
-                </label>
+                    <span ref={hiddenSpanRef} className="absolute white-space-pre left-3 top-0 opacity-0 pointer-events-none text-sm">
+                        {inputValue}
+                    </span>
 
-                <span ref={hiddenSpanRef} className="absolute white-space-pre left-3 top-0 opacity-0 pointer-events-none text-sm">
-                    {inputValue}
-                </span>
+                    <span className="absolute top-[10px] left-0 pl-[0.76rem] pointer-events-none select-none text-gray-400 text-sm" style={{ marginLeft: `${inputWidth}px` }}>
+                        {hint}
+                    </span>
+                </div>
 
-                <span className="absolute top-[10px] left-0 pl-[0.76rem] pointer-events-none select-none text-gray-400 text-sm" style={{ marginLeft: `${inputWidth}px` }}>
-                    {hint}
-                </span>
+                <ul className="z-10 list-none w-full mt-1 flex text-gray-500 ml-1 text-xs">
+                    {something}
+                </ul>
+
+                <div className="flex flex-wrap pt-2">
+                    {selectedTags.map(tag => (
+                        <TagElement key={tag.value} color={tag.color} text={tag.value} onRemove={handleRemovetag} />
+                    ))}
+                </div>
             </div>
-
-            <ul className="z-10 list-none w-full mt-1 flex text-gray-500 ml-1 text-xs">
-                {something}
-            </ul>
-
-            <div className="flex flex-wrap pt-2">
-                {selectedTags.map(tag => (
-                    <Tag key={tag.value} color={tag.color} text={tag.value} onRemove={handleRemovetag} />
-                ))}
-            </div>
-        </div>
-    );
+        );
+    }, [tags, selectedTags, inputValue, hint, error, inputWidth, something]);
+    return html;
 };
 
 export default TagSelector;

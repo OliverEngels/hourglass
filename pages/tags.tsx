@@ -2,6 +2,9 @@ import Badge from "@components/tag.client";
 import { Input } from "@components/form-elements.client";
 import { useEffect, useState } from "react";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import { createTags, updateTag } from "@redux/reducers/tags";
 
 const Tags = () => {
     const [html, setHtml] = useState(<></>);
@@ -9,15 +12,45 @@ const Tags = () => {
     const [oldId, setOldId] = useState<string>(null);
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
+    const tags = useSelector((state: RootState) => state.tagState.tags);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const handleDataUpdate = (data: any) => {
+            console.log('Data updated:', data);
+        };
+
+        const cleanupListener = window.electron.onDataUpdate(handleDataUpdate);
+
+        return () => {
+            if (typeof cleanupListener === 'function') {
+                //@ts-ignore
+                cleanupListener();
+            }
+        };
+    }, []);
+
+    const updateData = (newData: any) => {
+        window.electron.sendUpdate(newData);
+    };
+
     const { response, isLoading } = HttpRequest('/api/tags', {
         method: 'GET',
     });
     const [responseDate, setResponseData] = useState([]);
 
     useEffect(() => {
-        if (response)
-            setResponseData(response.data);
-    }, [response]);
+        HttpRequestPromise(`/api/tags`)
+            .then((e) => {
+                dispatch(createTags(e.data));
+            });
+    }, []);
+
+    useEffect(() => {
+        console.log("update")
+        if (tags)
+            setResponseData(tags);
+    }, [tags]);
 
     const colors = ['Orange', 'Red', 'Green', 'Blue', 'Yellow', 'Pink', 'Gray', 'Purple', 'Lime'];
 
@@ -61,10 +94,15 @@ const Tags = () => {
                 subtype: e.subtype,
                 color: colorValue
             })
-        }).then((e) => {
-            //console.log(e)
-            setResponseData(e.data);
-        })
+        }).then((reponse) => {
+            const updatedTag = reponse.data.find(tag => tag.id == e.id);
+            dispatch(updateTag({ id: e.id, updatedTagData: updatedTag }));
+            updateData({
+                update: 'tag',
+                data: updatedTag
+            });
+            setResponseData(reponse.data);
+        });
     };
 
     const handleSelectRow = (value: string) => {
@@ -126,7 +164,7 @@ const Tags = () => {
                             </tr>
                         </thead>
                         <tbody className="scrollable-tbody max-h-full w-full">
-                            {responseDate.map((e, i) => (
+                            {tags.map((e, i) => (
                                 <tr className="bg-gray-100 text-gray-500 text-sm border-t" id={e.id} key={`row-${i}`}>
                                     <td className="text-center">
                                         <label className="checkbox-container">
@@ -172,7 +210,7 @@ const Tags = () => {
                 }
             </div >
         )
-    }, [isLoading, responseDate, oldId, selectedRows]);
+    }, [isLoading, tags, oldId, selectedRows]);
 
     return html;
 }

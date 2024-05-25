@@ -10,7 +10,7 @@ interface FetchOptions {
 export async function HttpRequestPromise(
     urlOrUrlCreator: string | (() => string),
     options: FetchOptions = {}
-): Promise<{ success: boolean, data?: any }> {
+): Promise<ApiResponse> {
     try {
         const url = typeof urlOrUrlCreator === 'function' ? urlOrUrlCreator() : urlOrUrlCreator;
         if (!url) {

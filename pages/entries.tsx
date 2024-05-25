@@ -4,16 +4,16 @@ import TagSelector from "@components/tag-selector.client";
 import { Input } from "@components/form-elements.client";
 import { formatDate } from "@components/helpers/datetime.format";
 import { useEffect, useRef, useState } from "react";
-import { TagData } from "../components/schemes/api-tag";
 import { HttpRequest, HttpRequestPromise } from "@components/http-request";
 import { exportTableToCSV } from "@components/helpers/csv.export";
 import { calculateTotalTime, formatMinutesToHours, getTimeDifference } from "@components/helpers/time.format";
 import React from "react";
+import { Tag } from "@redux/reducers/tags";
 
 type FormData = {
     startDate: Date;
     endDate: Date;
-    tags: TagData[];
+    tags: Tag[];
     search: string;
 };
 
@@ -21,6 +21,25 @@ const Entries = () => {
     const [html, setHtml] = useState(<></>);
     const tableRef = useRef(null);
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
+    useEffect(() => {
+        const handleDataUpdate = (data: any) => {
+            console.log('Data updated:', data);
+        };
+
+        const cleanupListener = window.electron.onDataUpdate(handleDataUpdate);
+
+        return () => {
+            if (typeof cleanupListener === 'function') {
+                //@ts-ignore
+                cleanupListener();
+            }
+        };
+    }, []);
+
+    const updateData = (newData: any) => {
+        window.electron.sendUpdate(newData);
+    };
 
     const [formData, setFormData] = useState<FormData>(
         { startDate: new Date(Date.now()), endDate: new Date(Date.now()), tags: [], search: '' });
@@ -60,7 +79,7 @@ const Entries = () => {
         });
     }
 
-    const handleTags = (newTags: TagData[] | ((tags: TagData[]) => TagData[])) => {
+    const handleTags = (newTags: Tag[] | ((tags: Tag[]) => Tag[])) => {
         let updatedTags = [];
 
         if (typeof newTags === 'function') {
