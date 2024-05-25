@@ -12,6 +12,7 @@
     "start-electron": "ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.5",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "electron-store": "^9.0.0",
@@ -20,7 +21,8 @@
     "mongodb": "^6.5.0",
     "next": "14.2.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-redux": "^9.1.2"
   },
   "resolutions": {
     "string-width": "^5.0.1"
