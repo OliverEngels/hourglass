@@ -184,7 +184,7 @@ const Entries = () => {
                         </thead>
                         <tbody className="scrollable-tbody max-h-full w-full">
                             {responseDate.map((e, i) => (
-                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50" id={e.id} key={`row-${i}`}>
+                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50 cursor-pointer" id={e.id} key={`row-${i}`}>
                                     <td className="text-center">
                                         <label className="checkbox-container">
                                             <input
