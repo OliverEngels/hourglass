@@ -84,10 +84,6 @@ export default function Home() {
     }));
   };
 
-  function objectsAreEqual(obj1, obj2, keys) {
-    return keys.every(key => obj1[key] === obj2[key]);
-  }
-
   useEffect(() => {
     const obj2Map = new Map(log.tags.map(obj => [obj.id, obj]));
     const matchingObjects = tags.filter(obj1 => obj2Map.has(obj1.id));
