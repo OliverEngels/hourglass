@@ -130,9 +130,15 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, setSelectedTags
             </ul>
 
             <div className="flex flex-wrap pt-2">
-                {selectedTags.map(tag => (
-                    <TagElement key={tag.value} color={tag.color} text={tag.value} onRemove={() => handleRemoveTag(tag.value)} />
-                ))}
+                {selectedTags.map((b, j) => {
+                    const tag = tags.find(t => t.value == b.value);
+                    if (tag)
+                        return <TagElement
+                            key={`badge-${tag.id}-${j}`}
+                            color={tag.color}
+                            text={tag.value}
+                            onRemove={() => handleRemoveTag(tag.value)} />
+                })}
             </div>
         </div>
     );

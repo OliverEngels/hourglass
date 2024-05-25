@@ -224,7 +224,7 @@ export default function Home() {
         <div className="relative mt-5">
           <TagSelector
             selectedTags={log.tags}
-            setselectedTags={handleTags}
+            setSelectedTags={handleTags}
             error={response.find(e => e.element == 'tags')?.error}
           />
         </div>
