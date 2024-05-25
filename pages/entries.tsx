@@ -94,8 +94,7 @@ const Entries = () => {
     useEffect(() => {
         HttpRequestPromise('/api/entries', {
             method: 'POST',
-            body: JSON.stringify({
-            })
+            body: JSON.stringify(formData)
         }).then(_response => {
             dispatch(createEntries(_response.data));
             setIsLoading(false);
@@ -238,7 +237,7 @@ const Entries = () => {
                             </tr>
                             :
                             entries.map((e, i) => (
-                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50 cursor-pointer h-full" id={e.id} key={`row-${i}`} onClick={() => updateData({ update: 'select-entry', data: e })}>
+                                <tr className="bg-gray-100 text-gray-500 text-sm border-t hover:bg-gray-50 cursor-pointer h-full" id={e.id} key={`row-${i}`}>
                                     <td className="text-center">
                                         <label className="checkbox-container">
                                             <input
@@ -250,12 +249,12 @@ const Entries = () => {
                                             <span className="checkmark"></span>
                                         </label>
                                     </td>
-                                    <td className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
-                                    <td className="px-4 py-2 text-start">{e.description}</td>
-                                    <td className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
-                                    <td className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
-                                    <td className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
-                                    <td className="px-4 py-2 text-start hidden lg:table-cell">
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-start">{e.description}</td>
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-start hidden lg:table-cell">
                                         {e.notes.split('\n').map((line, index) => (
                                             <React.Fragment key={index}>
                                                 {line}
@@ -263,7 +262,7 @@ const Entries = () => {
                                             </React.Fragment>
                                         ))}
                                     </td>
-                                    <td className="px-4 py-2 hidden sm:table-cell align-middle">
+                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 hidden sm:table-cell align-middle">
                                         <div className="flex justify-end">
                                             {e.tags.map((b, j) => {
                                                 const tag = tags.find(t => t.value == b.value);
