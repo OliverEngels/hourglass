@@ -2,44 +2,35 @@ const { BrowserWindow } = require('electron');
 const path = require('path');
 
 const { getLoggerWindow } = require('./loggerWindow');
-const { getEntriesWindow } = require('./entriesWindow');
 
 let tagWindow = null;
 
 function createTagWindow(from = "") {
-    let entries = null;
     let logger = null;
 
-    if (getEntriesWindow)
-        entries = getEntriesWindow();
     if (getTagWindow)
         logger = getLoggerWindow();
 
     let newX = 5;
     let newY = 5;
+    let newHeight = 500;
 
-    if (logger != null && from == 'logger') {
+    if (logger != null) {
         const [mainX, mainY] = logger.getPosition();
         const [mainWidth, mainHeight] = logger.getSize();
 
         newX = logger ? mainX + mainWidth + 10 : 0;
         newY = logger ? mainY : 0;
-    }
-    if (entries != null && from == 'entries') {
-        const [mainX, mainY] = entries.getPosition();
-        const [mainWidth, mainHeight] = entries.getSize();
-
-        newX = entries ? mainX + mainWidth + 10 : 0;
-        newY = entries ? mainY : 0;
+        newHeight = mainHeight;
     }
 
     if (!tagWindow) {
         tagWindow = new BrowserWindow({
-            width: 500,
+            width: 400,
             minWidth: 300,
             maxWidth: 700,
-            height: 500,
-            minHeight: 500,
+            height: newHeight,
+            minHeight: 425,
             x: newX,
             y: newY,
             resizable: false,
