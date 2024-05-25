@@ -1,16 +1,20 @@
 const { BrowserWindow, ipcMain } = require('electron');
 
 const { getEntriesWindow, createEntriesWindow } = require('./screens/entriesWindow');
-const { getLoggerWindow } = require('./screens/loggerWindow');
+const { getLoggerWindow, createLoggerWindow } = require('./screens/loggerWindow');
 const { getTagWindow, createTagWindow } = require('./screens/tagsWindow');
 
 // handle window summoning
 ipcMain.on('entries-window', (event, arg) => {
-    createEntriesWindow();
+    createEntriesWindow(arg);
 });
 
 ipcMain.on('tags-window', (event, arg) => {
-    createTagWindow();
+    createTagWindow(arg);
+});
+
+ipcMain.on('logger-window', (event, arg) => {
+    createLoggerWindow(arg);
 });
 
 // Handle window controls
