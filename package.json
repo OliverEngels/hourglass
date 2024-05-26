@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build-electron": "NEXT_PUBLIC_ENV=prod next build && NEXT_PUBLIC_ENV=prod npx electron-builder --config ./electron/electron-builder-prod.yml build --mac",
+    "build-electron": "NEXT_PUBLIC_ENV=prod next build && NEXT_PUBLIC_ENV=prod npx electron-builder --config ./electron/electron-builder-prod.yml build",
     "start-electron": "NEXT_PUBLIC_ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose"
   },
   "dependencies": {
