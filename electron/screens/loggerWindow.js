@@ -3,7 +3,7 @@ const path = require('path');
 
 let loggerWindow = null;
 
-function createLoggerWindow(from) {
+function createLoggerWindow() {
     const primaryDisplay = screen.getPrimaryDisplay();
     const { workAreaSize } = primaryDisplay;
 
@@ -39,7 +39,7 @@ function createLoggerWindow(from) {
         });
 
         loggerWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}`);
-        if (process.env.ENV === 'dev') {
+        if (process.env.NEXT_PUBLIC_ENV === 'dev') {
             loggerWindow.webContents.openDevTools();
         }
 

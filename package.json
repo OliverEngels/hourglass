@@ -25,7 +25,7 @@
     "react-redux": "^9.1.2"
   },
   "resolutions": {
-    "string-width": "^5.0.1"
+    "string-width": "^4.2.0"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
@@ -37,7 +37,7 @@
     "electron": "^30.0.3",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
-    "electron-reload": "^2.0.0-alpha.1",
+    "": "^2.0.0-alpha.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.0",
     "nodemon": "^3.1.0",

@@ -1,10 +1,8 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
-
+require('./ipc');
 require('dotenv').config();
 
 let store;
-
-require('./ipc');
 
 const { createLoggerWindow } = require('./screens/loggerWindow');
 const setupSettings = require('./setupSettings');
@@ -15,13 +13,12 @@ const next = require('next');
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-require('electron-reload')(__dirname, {
-    electron: require(`${__dirname}/../node_modules/electron`)
-});
+// require('electron-reload')(__dirname, {
+//     electron: require(`${__dirname}/../node_modules/electron`)
+// });
 
 nextApp.prepare().then(async () => {
     const ses = session.defaultSession;
-
     ses.webRequest.onHeadersReceived((details, callback) => {
         const newCsp = `default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src 'self' http://localhost:${process.env.NEXT_PUBLIC_MONGO_API_PORT}; style-src 'self' 'unsafe-eval' 'unsafe-inline'`;
         const responseHeaders = Object.assign({}, details.responseHeaders, {
@@ -58,7 +55,6 @@ nextApp.prepare().then(async () => {
 
     await import('electron-store').then((StoreModule) => {
         store = new StoreModule.default();
-        //store.clear();
     }).catch(err => {
         console.error('Failed to load electron-store:', err);
     });

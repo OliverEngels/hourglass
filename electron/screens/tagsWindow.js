@@ -5,7 +5,7 @@ const { getLoggerWindow } = require('./loggerWindow');
 
 let tagWindow = null;
 
-function createTagWindow(from = "") {
+function createTagWindow() {
     let logger = null;
 
     if (getTagWindow)
@@ -45,7 +45,7 @@ function createTagWindow(from = "") {
             }
         });
 
-        if (process.env.ENV === 'prod') {
+        if (process.env.NEXT_PUBLIC_ENV === 'prod') {
             tagWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/tags.html`);
         }
         else {

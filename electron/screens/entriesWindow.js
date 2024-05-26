@@ -5,7 +5,7 @@ let entriesWindow = null;
 
 const { getLoggerWindow } = require('./loggerWindow');
 
-function createEntriesWindow(from) {
+function createEntriesWindow() {
     let logger = null;
 
     if (getLoggerWindow)
@@ -44,7 +44,7 @@ function createEntriesWindow(from) {
             }
         });
 
-        if (process.env.ENV === 'prod') {
+        if (process.env.NEXT_PUBLIC_ENV === 'prod') {
             entriesWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/entries.html`);
         }
         else {
