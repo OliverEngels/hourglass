@@ -5,7 +5,7 @@ declare global {
         electron: {
             openEntriesWindow: () => void;
             openTagsWindow: () => void;
-            openLoggerWindow: () => void;
+            openLoggerWindow: () => promise;
             minimize: () => void;
             maximize: () => void;
             closeWindow: () => void;

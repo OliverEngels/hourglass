@@ -78,10 +78,19 @@ const Entries = () => {
         };
     }, [formData, tags]);
 
-
     const updateData = (newData: any) => {
         window.electron.sendUpdate(newData);
     };
+
+    const handleLoggerSpawn = (newData: any) => {
+        window.electron.openLoggerWindow()
+            .then((e) => {
+                updateData(newData);
+            })
+            .catch(error => {
+                console.error('Failed to create logger window:', error);
+            });
+    }
 
     useEffect(() => {
         HttpRequestPromise('/api/tags')
@@ -249,12 +258,12 @@ const Entries = () => {
                                             <span className="checkmark"></span>
                                         </label>
                                     </td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-start">{e.description}</td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 text-start hidden lg:table-cell">
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 w-[115px] text-start">{e.date.split("T")[0]}</td>
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 text-start">{e.description}</td>
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.starttime}</td>
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 text-center hidden lg:table-cell">{e.endtime}</td>
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 text-center">{formatMinutesToHours(getTimeDifference(e.starttime, e.endtime))}</td>
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 text-start hidden lg:table-cell">
                                         {e.notes.split('\n').map((line, index) => (
                                             <React.Fragment key={index}>
                                                 {line}
@@ -262,7 +271,7 @@ const Entries = () => {
                                             </React.Fragment>
                                         ))}
                                     </td>
-                                    <td onClick={() => updateData({ update: 'select-entry', data: e })} className="px-4 py-2 hidden sm:table-cell align-middle">
+                                    <td onClick={() => handleLoggerSpawn({ update: 'select-entry', data: e })} className="px-4 py-2 hidden sm:table-cell align-middle">
                                         <div className="flex justify-end">
                                             {e.tags.map((b, j) => {
                                                 const tag = tags.find(t => t.value == b.value);

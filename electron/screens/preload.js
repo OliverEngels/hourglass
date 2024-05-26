@@ -1,9 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
-    openEntriesWindow: (from) => ipcRenderer.send('entries-window', from),
-    openTagsWindow: (from) => ipcRenderer.send('tags-window', from),
-    openLoggerWindow: (from) => ipcRenderer.send('logger-window', from),
+    openEntriesWindow: () => ipcRenderer.send('entries-window'),
+    openTagsWindow: () => ipcRenderer.send('tags-window'),
+    openLoggerWindow: () => ipcRenderer.invoke('logger-window'),
     minimize: () => ipcRenderer.send('minimize'),
     maximize: () => ipcRenderer.send('maximize'),
     closeWindow: () => ipcRenderer.send('close'),

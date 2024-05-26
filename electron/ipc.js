@@ -13,8 +13,14 @@ ipcMain.on('tags-window', (event, arg) => {
     createTagWindow();
 });
 
-ipcMain.on('logger-window', (event, arg) => {
-    createLoggerWindow();
+ipcMain.handle('logger-window', async (event, arg) => {
+    try {
+        const result = await createLoggerWindow();
+        return result;
+    } catch (err) {
+        console.error('Error creating logger window:', err);
+        throw err;
+    }
 });
 
 // Handle window controls
