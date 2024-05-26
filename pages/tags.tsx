@@ -116,6 +116,10 @@ const Tags = () => {
         });
     };
 
+    useEffect(() => {
+        handleSearch();
+    }, [tags]);
+
     const handleSelectRow = (value: string) => {
         if (selectedRows.includes(value)) {
             const remainingTags = selectedRows.filter(tag => tag != value);
