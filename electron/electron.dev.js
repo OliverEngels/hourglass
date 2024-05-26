@@ -7,7 +7,7 @@ let store;
 const { createLoggerWindow } = require('./screens/loggerWindow');
 const setupSettings = require('./setupSettings');
 
-const dev = process.env.ENV === 'dev';
+const dev = process.env.NEXT_PUBLIC_ENV === 'dev';
 
 const next = require('next');
 const nextApp = next({ dev });
