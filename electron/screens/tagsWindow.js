@@ -50,7 +50,7 @@ function createTagWindow() {
         }
         else {
             tagWindow.loadURL(`http://localhost:${process.env.ELECTRON_PORT}/tags`);
-            // tagWindow.webContents.openDevTools();
+            tagWindow.webContents.openDevTools();
         }
 
         tagWindow.on('closed', () => { tagWindow = null; });
