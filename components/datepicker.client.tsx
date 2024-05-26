@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getMonthName, getWeekNumber } from './helpers/datetime.format';
+import { formatDate, getMonthName, getWeekNumber } from './helpers/datetime.format';
 
 interface CalendarProps {
     title: string;
     placeholder: string;
+    value?: string;
     startAndEndDate?: boolean;
     setDates: (dates: { startDate?: Date; endDate?: Date }) => void;
 }
 
-const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, startAndEndDate = true }) => {
+const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, value, setDates, startAndEndDate = true }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState({
         startDate: new Date(Date.now()),
@@ -89,13 +90,7 @@ const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, sta
         return days;
     };
 
-    const formatDate = (date) => {
-        if (!date) return '';
-        let day = date.getDate().toString().padStart(2, '0');
-        let month = (date.getMonth() + 1).toString().padStart(2, '0');
-        let year = date.getFullYear();
-        return `${year}-${month}-${day}`;
-    };
+
 
     const isInRange = (date) => {
         if (!startAndEndDate) return;
@@ -149,7 +144,9 @@ const DatePicker: React.FC<CalendarProps> = ({ title, placeholder, setDates, sta
                 className="peer block w-full rounded-md border-0 py-2.5 pl-3 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm bg-slate-200"
                 type="text"
                 placeholder={placeholder}
-                value={startAndEndDate ? `${formatDate(selectedDates.startDate)} / ${formatDate(selectedDates.endDate)}` : formatDate(selectedDates.startDate)}
+                value={value ? value : startAndEndDate ?
+                    `${formatDate(selectedDates.startDate)} / ${formatDate(selectedDates.endDate)}` :
+                    formatDate(selectedDates.startDate)}
                 readOnly
                 onClick={toggleCalendar}
             />

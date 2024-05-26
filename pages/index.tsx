@@ -37,7 +37,6 @@ export default function Home() {
             if (response.update == 'select-entry') {
                 const obj2Map = new Map(response.data.tags.map(obj => [obj.value, obj]));
                 const matchingObjects = tags.filter(obj1 => obj2Map.has(obj1.value));
-
                 dispatch(updateLog({ ...response.data, tags: matchingObjects }));
             }
         };
@@ -67,7 +66,9 @@ export default function Home() {
     }
 
     const handleDate = (date) => {
-        dispatch(updateLog({ date: new Date(date).toISOString() }));
+        const newDate = new Date(date.startDate);
+        newDate.setHours(12);
+        dispatch(updateLog({ date: newDate.toISOString() }));
     }
 
     const handleClear = (e) => {
@@ -251,7 +252,12 @@ export default function Home() {
             <>
                 <form onKeyDown={handleKeyDown} onSubmit={handleSubmit}>
                     <div className="relative mt-5">
-                        <DatePicker setDates={handleDate} title="Date" placeholder={formatDate(new Date(Date.now()))} startAndEndDate={false} />
+                        <DatePicker
+                            setDates={handleDate}
+                            title="Date"
+                            value={formatDate(new Date(log.date))}
+                            placeholder={formatDate(new Date(Date.now()))}
+                            startAndEndDate={false} />
                     </div>
 
                     <div className="flex justify-items-stretch space-x-2">
