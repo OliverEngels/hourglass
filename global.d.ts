@@ -3,9 +3,9 @@ export { };
 declare global {
     interface Window {
         electron: {
-            openEntriesWindow: (from) => void;
-            openTagsWindow: (from) => void;
-            openLoggerWindow: (from) => void;
+            openEntriesWindow: () => void;
+            openTagsWindow: () => void;
+            openLoggerWindow: () => void;
             minimize: () => void;
             maximize: () => void;
             closeWindow: () => void;

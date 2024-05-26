@@ -6,15 +6,15 @@ const { getTagWindow, createTagWindow } = require('./screens/tagsWindow');
 
 // handle window summoning
 ipcMain.on('entries-window', (event, arg) => {
-    createEntriesWindow(arg);
+    createEntriesWindow();
 });
 
 ipcMain.on('tags-window', (event, arg) => {
-    createTagWindow(arg);
+    createTagWindow();
 });
 
 ipcMain.on('logger-window', (event, arg) => {
-    createLoggerWindow(arg);
+    createLoggerWindow();
 });
 
 // Handle window controls
