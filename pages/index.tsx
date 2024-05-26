@@ -300,9 +300,9 @@ export default function Home() {
                     </div>
                 </form>
                 <div className="mt-3 text-xs flex justify-center gap-x-2 text-gray-500">
-                    <span className="cursor-pointer hover:underline select-none" onClick={() => { window.electron.openEntriesWindow("logger"); }}>Entries</span>
+                    <span className="cursor-pointer hover:underline select-none" onClick={() => { window.electron.openEntriesWindow(); }}>Entries</span>
                     /
-                    <span className="cursor-pointer hover:underline select-none" onClick={() => { window.electron.openTagsWindow("logger"); }}>Tags</span>
+                    <span className="cursor-pointer hover:underline select-none" onClick={() => { window.electron.openTagsWindow(); }}>Tags</span>
                 </div>
             </>
         );
