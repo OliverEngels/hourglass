@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "build-electron": "ENV=prod next build && ENV=prod npx electron-builder --config ./electron/electron-builder-prod.yml build --mac",
-    "start-electron": "ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose"
+    "start-electron": "NEXT_PUBLIC_ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
