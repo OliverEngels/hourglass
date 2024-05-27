@@ -13,7 +13,7 @@ services:
       - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${NEXT_PUBLIC_MONGO_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${NEXT_PUBLIC_MONGO_API_PASSWORD}
+      MONGO_INITDB_ROOT_PASSWORD: ${NEXT_PUBLIC_MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${NEXT_PUBLIC_MONGO_DB}
     networks:
       - hourglass-network
