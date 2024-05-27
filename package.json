@@ -38,7 +38,7 @@
     "electron": "^30.0.3",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
-    "": "^2.0.0-alpha.1",
+    "electron-reload": "^2.0.0-alpha.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.0",
     "nodemon": "^3.1.0",
