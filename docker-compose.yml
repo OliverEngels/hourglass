@@ -22,6 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
+    image: hourglass-api:1.0.0
     ports:
       - "${NEXT_PUBLIC_MONGO_API_PORT}:3000"
     volumes:
