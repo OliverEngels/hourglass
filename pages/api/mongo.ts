@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 
 const dev = process.env.NEXT_PUBLIC_ENV === "dev";
 
-const uri = `mongodb://${process.env.NEXT_PUBLIC_MONGO_USER}:${process.env.NEXT_PUBLIC_MONGO_API_PASSWORD}@${dev ? 'localhost' : 'mongo'}:27017/${process.env.NEXT_PUBLIC_MONGO_DB}`;
+const uri = `mongodb://${process.env.NEXT_PUBLIC_MONGO_USER}:${process.env.NEXT_PUBLIC_MONGO_PASSWORD}@${dev ? 'localhost' : 'mongo'}:27017/${process.env.NEXT_PUBLIC_MONGO_DB}`;
 const options = {};
 
 let client: MongoClient;
