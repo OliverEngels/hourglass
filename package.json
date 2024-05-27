@@ -1,16 +1,23 @@
 {
-  "name": "next-desktop-tst",
-  "version": "0.1.0",
+  "name": "hourglass",
+  "author": {
+    "name": "Oliver Engels",
+    "email": "contact@oliverengels.com"
+  },
+  "email": "contact@oliverengels.com",
+  "description": "A minimalist desktop app for freelancers to manually log and store time, focusing on simplicity, privacy, and local data storage.",
+  "version": "1.0.0",
   "main": "./electron/electron.prod.js",
   "private": true,
-  "license": "CC-BY-SA-4.0",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build-electron": "NEXT_PUBLIC_ENV=prod next build && NEXT_PUBLIC_ENV=prod npx electron-builder --config ./electron/electron-builder-prod.yml build",
-    "start-electron": "NEXT_PUBLIC_ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose"
+    "build-electron": "NEXT_PUBLIC_ENV=prod next build && NEXT_PUBLIC_ENV=prod npx electron-builder --config ./electron/electron-builder-prod.yml",
+    "start-electron": "NEXT_PUBLIC_ENV=dev nodemon --watch electron.dev.js --exec 'electron ./electron/electron.dev.js' --verbose",
+    "build-electron-complete": "export NEXT_PUBLIC_ENV=prod && next build && npx electron-builder --win --mac --linux --config ./electron/electron-builder-prod.yml"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
