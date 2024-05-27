@@ -4,7 +4,7 @@ directories:
   buildResources: "assets"
   output: "release/${version}"
 files:
-  - "**/*"
+  - "electron/**/*"
   - "out/**/*"
   - ".env"
 
