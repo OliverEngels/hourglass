@@ -1,5 +1,5 @@
-appId: your.id.prod
-productName: HourGlass
+appId: hour.glass.prod
+productName: Hourglass
 directories:
   buildResources: "assets"
   output: "release/${version}"
