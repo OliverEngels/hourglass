@@ -86,14 +86,14 @@ This app is still actively being build, I will add a dev channel where the lates
 ## FAQ
 
 **Q1: Can I not simply use an excel file for this?**
-- **A**: Yes, you can. However, Excel requires a paid subscription, and keeping an Excel file open can be quite a hassle as it takes up a lot of screen real estate. Nevertheless, I have an Excel file that performs the same function ([link]()). Feel free to use that instead.
+- **A**: Yes, you can. However, Excel requires a paid subscription, and keeping an Excel file open can be quite a hassle as it takes up a lot of screen real estate. Nevertheless, I have an Excel file that performs the same function ([link](https://github.com/OliverEngels/production-files-archive/blob/main/999_Misc/003_HourRecords.xlsx)). Feel free to use that instead.
 
 **Q2: I can see that there is a UniqueId registered in the code, I thought this was fully private?**
 - **A**: You’re right. I am currently in the process of recording times in the database using a unique ID. However, if you keep MongoDB local, the privacy aspect remains largely unchanged. Nevertheless, I have received requests to make the app register IDs in an offsite database to track times for teams or multiple users. I am working on adding that functionality.
 - **Note:** If you feel like this goes against the principles of the app than you can commend out or complete remove line <span style="color:#568914">228</span> to <span style="color:#568914">231</span> in the **index.tsx** file and rebuild the app.
 
 **Q3: I’m having trouble installing the app. Can you help?**
-- **A**: Certainly! You can contact me at `contact@oliverengels.com`. If the issue is less urgent, you can also [open an issue]() on the GitHub repository.
+- **A**: Certainly! You can contact me at `contact@oliverengels.com`. If the issue is less urgent, you can also [open an issue](https://github.com/OliverEngels/hourglass/issues) on the GitHub repository.
 
 **Q4: I noticed the app is not using an HTTPS connection. Why is that?**
 - **A**: In most cases, the app is intended to run locally with a local Docker container. If you deploy it on a server, I trust you would be able to configure it to use an HTTPS connection. That said, I am considering adding instructions for enabling HTTPS either in the README or more generally within the app. Stay tuned!
